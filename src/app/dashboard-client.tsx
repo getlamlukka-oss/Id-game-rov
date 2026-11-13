@@ -35,13 +35,13 @@ export default function DashboardClient({ categories, accounts, dataError }: Pro
 
   const categoryById = useMemo(() => new Map(categories.map((category) => [category.id, category.name])), [categories])
   const playedCount = accounts.filter((account) => categoryById.get(account.category_id) === 'ไอดีเล่นแล้ว').length
-  const roundZeroCount = accounts.length - playedCount
+  const notPlayedCount = accounts.length - playedCount
 
   const filteredAccounts = useMemo(() => accounts.filter((account) => {
     const categoryName = categoryById.get(account.category_id) || ''
     const isPlayed = categoryName === 'ไอดีเล่นแล้ว'
     const matchesCategory = categoryFilter === 'ทั้งหมด' || categoryName === categoryFilter
-    const matchesStatus = statusFilter === 'ทั้งหมด' || (statusFilter === 'เล่นแล้ว' && isPlayed) || (statusFilter === 'รอบ 0' && !isPlayed)
+    const matchesStatus = statusFilter === 'ทั้งหมด' || (statusFilter === 'เล่นแล้ว' && isPlayed) || (statusFilter === 'ยังไม่เล่น' && !isPlayed)
     const term = search.trim().toLocaleLowerCase()
     const matchesSearch = !term || [account.game_id, account.game_name, account.notes, categoryName].some((value) => value?.toLocaleLowerCase().includes(term))
     return matchesCategory && matchesStatus && matchesSearch
@@ -105,7 +105,7 @@ export default function DashboardClient({ categories, accounts, dataError }: Pro
       <section className="mt-6 grid grid-cols-3 gap-2 sm:gap-4" aria-label="สรุปบัญชี">
         <Metric label="บัญชีทั้งหมด" value={accounts.length} tone="metric-lime" />
         <Metric label="เล่นแล้ว" value={playedCount} tone="metric-coral" />
-        <Metric label="รอบ 0" value={roundZeroCount} tone="metric-cream" />
+        <Metric label="ยังไม่เล่น" value={notPlayedCount} tone="metric-cream" />
       </section>
 
       <section className="mt-8">
@@ -137,7 +137,7 @@ export default function DashboardClient({ categories, accounts, dataError }: Pro
         </div>
         <div className="mt-5 flex flex-wrap items-center gap-2">
           <span className="mr-1 text-xs font-extrabold text-muted">สถานะ</span>
-          {['ทั้งหมด', 'เล่นแล้ว', 'รอบ 0'].map((name) => <button key={name} type="button" onClick={() => setStatusFilter(name)} className={statusFilter === name ? 'status-chip active' : 'status-chip'}>{name}</button>)}
+          {['ทั้งหมด', 'เล่นแล้ว', 'ยังไม่เล่น'].map((name) => <button key={name} type="button" onClick={() => setStatusFilter(name)} className={statusFilter === name ? 'status-chip active' : 'status-chip'}>{name}</button>)}
         </div>
         {categories.filter((category) => category.name === 'บัต Evo').map((category) => (
           <button
@@ -189,7 +189,7 @@ export default function DashboardClient({ categories, accounts, dataError }: Pro
                           <p className="eyebrow">ROV ACCOUNT</p>
                           <h3 className="mt-1 break-all text-lg font-black tracking-tight">{account.game_id}</h3>
                         </div>
-                        <span className={played ? 'account-status played' : 'account-status'}>{played ? 'เล่นแล้ว' : 'รอบ 0'}</span>
+                        <span className={played ? 'account-status played' : 'account-status'}>{played ? 'เล่นแล้ว' : 'ยังไม่เล่น'}</span>
                       </div>
                       <p className="mt-2 min-h-10 text-sm font-semibold leading-5 text-muted">{account.notes || 'ไม่มีรายละเอียดตัวละคร'}</p>
                     </div>

@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
 import { logout } from '@/app/actions/auth'
 import DashboardClient, { type Account, type Category } from './dashboard-client'
 
@@ -20,13 +21,13 @@ export default async function Home() {
     <main className="min-h-screen">
       <div className="mx-auto max-w-7xl px-4 pb-12 pt-5 sm:px-6 lg:px-8">
         <header className="flex items-center justify-between gap-3 border-b-2 border-ink pb-4">
-          <a href="/" className="flex min-w-0 items-center gap-3" aria-label="ROV ID Manager">
+          <Link href="/" className="flex min-w-0 items-center gap-3" aria-label="ROV ID Manager">
             <span className="brand-mark">R</span>
             <span className="min-w-0">
               <span className="block truncate text-base font-black tracking-tight sm:text-lg">ROV ID MANAGER</span>
               <span className="block text-[10px] font-bold tracking-[.2em] text-muted">PERSONAL GAME VAULT</span>
             </span>
-          </a>
+          </Link>
           <div className="flex shrink-0 items-center gap-2 sm:gap-3">
             <span className="hidden max-w-44 truncate text-xs font-semibold text-muted sm:block">{user.email}</span>
             <span className="user-avatar">{user.email?.slice(0,1).toUpperCase() || 'U'}</span>
@@ -41,8 +42,8 @@ export default async function Home() {
             <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-ink/20 bg-cream/70 px-3 py-1 text-[10px] font-black tracking-[.18em]">
               <span className="size-2 rounded-full bg-lime" /> YOUR ROV COLLECTION
             </div>
-            <h1 className="max-w-xl text-3xl font-black leading-[1.08] tracking-tight sm:text-5xl">คลังไอดีของคุณ<br/><span className="text-accent">จัดการได้ในที่เดียว</span></h1>
-            <p className="mt-3 max-w-lg text-sm font-medium leading-6 text-muted sm:text-base">ค้นหา ตรวจสอบรายละเอียด และแยกหมวดบัญชี ROV ได้อย่างรวดเร็ว</p>
+            <h1 className="max-w-xl text-3xl font-black leading-[1.08] tracking-tight sm:text-5xl">คลังไอดีของคุณ</h1>
+            <p className="mt-3 max-w-lg text-sm font-medium leading-6 text-muted sm:text-base">ค้นหาและจัดการบัญชี ROV ได้อย่างรวดเร็วในที่เดียว</p>
           </div>
           <div className="hero-stamp" aria-hidden="true">ROV<br/><span>ID VAULT</span></div>
         </section>
