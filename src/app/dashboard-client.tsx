@@ -13,7 +13,7 @@ type FormValues = { game_id: string; game_name: string; category_id: string; not
 const mainCategories = ['กรอบ 6', 'กรอบ 7', 'กรอบแอส']
 const emptyForm: FormValues = { game_id: '', game_name: '', category_id: '', notes: '' }
 
-const frameByCategory: Record<string, string> = {
+const frameArtwork: Record<string, string> = {
   'กรอบ 6': '/account-frames/frame-krob7.webp',
   'กรอบ 7': '/account-frames/frame-krob6.webp',
   'กรอบแอส': '/account-frames/frame-krob-as.webp',
@@ -132,7 +132,7 @@ export default function DashboardClient({ categories, accounts, dataError }: Pro
           {['ทั้งหมด', ...mainCategories].map((name) => {
             const active = categoryFilter === name
             const count = name === 'ทั้งหมด' ? accounts.length : accounts.filter((account) => categoryById.get(account.category_id) === name).length
-            return <button key={name} type="button" onClick={() => setCategoryFilter(name)} className={active ? 'filter-chip active' : 'filter-chip'}>{name}<span>{count}</span></button>
+            return <button key={name} type="button" onClick={() => setCategoryFilter(name)} className={active ? 'filter-chip active' : 'filter-chip'}><CategoryLabel name={name} /> <span>{count}</span></button>
           })}
         </div>
         <div className="mt-5 flex flex-wrap items-center gap-2">
@@ -150,7 +150,7 @@ export default function DashboardClient({ categories, accounts, dataError }: Pro
             <img src={categoryArtwork[category.name]} alt="" className="special-category-art" loading="lazy" />
             <span className="min-w-0 text-left">
               <span className="block text-[9px] font-black tracking-[.16em] text-muted">SPECIAL CATEGORY</span>
-              <span className="block text-sm font-black">บัต Evo</span>
+              <span className="block text-sm font-black"><CategoryLabel name="บัต Evo" /></span>
               <span className="block text-[10px] font-semibold text-muted">หมวดหมู่พิเศษ · {accounts.filter((account) => account.category_id === category.id).length} บัญชี</span>
             </span>
           </button>
@@ -173,20 +173,15 @@ export default function DashboardClient({ categories, accounts, dataError }: Pro
             {filteredAccounts.map((account) => {
               const categoryName = categoryById.get(account.category_id) || 'อื่น ๆ'
               const played = categoryName === 'ไอดีเล่นแล้ว'
-              const frameSrc = frameByCategory[categoryName]
-              const isSpecialCategory = Boolean(categoryArtwork[categoryName])
               return (
                 <article key={account.id} className="account-card">
                   <div className="account-card-main">
-                    <div className={`account-avatar-wrap ${categoryName === 'กรอบ 7' ? 'account-avatar-rect' : ''} ${isSpecialCategory ? 'account-avatar-special' : ''}`}>
-                      {isSpecialCategory ? (
-                        <img src={categoryArtwork[categoryName]} alt="ภาพประจำหมวด บัต Evo" className="account-avatar-photo" loading="lazy" />
-                      ) : account.image_path ? (
+                    <div className="account-avatar-wrap">
+                      {account.image_path ? (
                         <img src={account.image_path} alt={`รูปโปรไฟล์ ${account.game_name}`} className="account-avatar-photo" loading="lazy" />
                       ) : (
                         <span className="account-avatar-placeholder" aria-hidden="true">{account.game_name.trim().slice(0, 1).toUpperCase() || 'R'}</span>
                       )}
-                      {frameSrc && <img src={frameSrc} alt={`กรอบโปรไฟล์ ${categoryName}`} className="account-avatar-frame" loading="lazy" />}
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-start justify-between gap-2">
@@ -200,7 +195,7 @@ export default function DashboardClient({ categories, accounts, dataError }: Pro
                     </div>
                   </div>
                   <div className="mt-4 flex items-center justify-between gap-2 border-t border-ink/15 pt-3">
-                    <span className="truncate rounded-md bg-cream px-2.5 py-1 text-[11px] font-extrabold">{categoryName === 'ไก่ปอง 810' ? '🎟️ ไก่ปอง 810' : categoryName}</span>
+                    <span className="truncate rounded-md bg-cream px-2.5 py-1 text-[11px] font-extrabold"><CategoryLabel name={categoryName} /></span>
                     <span className="truncate text-[10px] font-bold uppercase tracking-wider text-muted">#{account.game_name}</span>
                   </div>
                   <div className="mt-4 flex justify-end gap-2 border-t border-ink/10 pt-3">
@@ -260,4 +255,14 @@ function FormField({ label, required, children }: { label: string; required?: bo
 
 function Metric({ label, value, tone }: { label: string; value: number; tone: string }) {
   return <article className={`metric-card ${tone}`}><span className="text-[10px] font-black tracking-wide sm:text-xs">{label}</span><strong className="mt-1 block text-2xl font-black leading-none sm:text-3xl">{value}</strong></article>
+}
+
+function CategoryLabel({ name }: { name: string }) {
+  const image = frameArtwork[name] || categoryArtwork[name]
+  return (
+    <span className="inline-flex items-center gap-1.5 align-middle">
+      {image ? <img src={image} alt="" aria-hidden="true" className="inline-block size-5 shrink-0 object-contain" loading="lazy" /> : null}
+      <span>{name === 'ไก่ปอง 810' ? '🎟️ ไก่ปอง 810' : name}</span>
+    </span>
+  )
 }
