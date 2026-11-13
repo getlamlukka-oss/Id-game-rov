@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Game ID Manager',
-  description: 'จัดเก็บและจัดหมวดหมู่ Game ID ส่วนตัว',
+  title: 'ROV ID Manager',
+  description: 'ระบบจัดเก็บและจัดการบัญชีเกม ROV ส่วนตัว',
 }
 
 export default function RootLayout({
