@@ -85,3 +85,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 @media (max-width: 380px) { .account-avatar-wrap { width: 78px; height: 78px; flex-basis: 78px; } .account-avatar-placeholder, .account-avatar-photo { width: 46px; height: 46px; } .account-avatar-rect .account-avatar-photo { width: 49px; height: 49px; } .account-card-main { gap: 10px; } }
 @media (min-width: 640px) { .site-header { margin-inline: -24px; padding-inline: 24px; } }
 .result-count { display: inline-flex; align-items: center; border-radius: 999px; padding: 6px 10px; background: rgb(255 254 250 / 80%); color: var(--muted); font-size: 11px; font-weight: 900; }
+.controls-layout { display: grid; gap: 14px; margin-top: 28px; }
+.control-panel { min-width: 0; border: 1px solid rgb(23 25 29 / 12%); border-radius: 22px; padding: 18px; background: rgb(255 254 250 / 78%); box-shadow: 0 10px 24px rgb(48 51 37 / 6%); }
+.control-panel .search-shell { box-shadow: none; }
+.category-strip { min-height: 76px; margin-top: 14px; }
+.category-strip .special-category-tile { margin-top: 0; }
+@media (min-width: 820px) { .controls-layout { grid-template-columns: minmax(0, 1.15fr) minmax(360px, .85fr); align-items: stretch; } .control-panel { padding: 20px; } }

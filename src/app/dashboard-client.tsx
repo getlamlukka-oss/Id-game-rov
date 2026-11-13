@@ -108,37 +108,42 @@ export default function DashboardClient({ categories, accounts, dataError }: Pro
         <Metric label="ยังไม่เล่น" value={notPlayedCount} tone="metric-cream" />
       </section>
 
-      <section className="mt-8">
-        <div className="mb-3 flex items-end justify-between gap-3">
-          <div>
-            <p className="eyebrow">FIND YOUR ACCOUNT</p>
-            <h2 className="section-heading">ค้นหาไอดีเกม</h2>
+      <div className="controls-layout">
+        <section className="control-panel">
+          <div className="mb-3 flex items-end justify-between gap-3">
+            <div>
+              <p className="eyebrow">FIND YOUR ACCOUNT</p>
+              <h2 className="section-heading">ค้นหาไอดีเกม</h2>
+            </div>
+            <span className="result-count" aria-live="polite">{filteredAccounts.length} รายการ</span>
           </div>
-          <span className="result-count" aria-live="polite">{filteredAccounts.length} รายการ</span>
-        </div>
-        <label className="search-shell">
-          <svg viewBox="0 0 24 24" aria-hidden="true" className="size-5 shrink-0"><circle cx="10.8" cy="10.8" r="6.8" fill="none" stroke="currentColor" strokeWidth="2"/><path d="m16 16 5 5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
-          <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="ค้นหารหัสไอดี ตัวละคร หรือหมายเหตุ..." aria-label="ค้นหารหัสไอดี ตัวละคร หรือหมายเหตุ" />
-          {search && <button type="button" className="clear-search" onClick={() => setSearch('')} aria-label="ล้างคำค้น">×</button>}
-        </label>
-      </section>
+          <label className="search-shell">
+            <svg viewBox="0 0 24 24" aria-hidden="true" className="size-5 shrink-0"><circle cx="10.8" cy="10.8" r="6.8" fill="none" stroke="currentColor" strokeWidth="2"/><path d="m16 16 5 5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
+            <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="ค้นหารหัสไอดี ตัวละคร หรือหมายเหตุ..." aria-label="ค้นหารหัสไอดี ตัวละคร หรือหมายเหตุ" />
+            {search && <button type="button" className="clear-search" onClick={() => setSearch('')} aria-label="ล้างคำค้น">×</button>}
+          </label>
+        </section>
 
-      <section className="mt-7">
-        <div className="mb-3">
-          <p className="eyebrow">COLLECTION FILTER</p>
-          <h2 className="section-heading">เลือกหมวดหมู่</h2>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {['ทั้งหมด', ...mainCategories].map((name) => {
-            const active = categoryFilter === name
-            const count = name === 'ทั้งหมด' ? accounts.length : accounts.filter((account) => categoryById.get(account.category_id) === name).length
-            return <button key={name} type="button" onClick={() => setCategoryFilter(name)} className={active ? 'filter-chip active' : 'filter-chip'}><CategoryLabel name={name} /> <span>{count}</span></button>
-          })}
-        </div>
-        <div className="mt-5 flex flex-wrap items-center gap-2">
-          <span className="mr-1 text-xs font-extrabold text-muted">สถานะ</span>
-          {['ทั้งหมด', 'เล่นแล้ว', 'ยังไม่เล่น'].map((name) => <button key={name} type="button" onClick={() => setStatusFilter(name)} className={statusFilter === name ? 'status-chip active' : 'status-chip'}>{name}</button>)}
-        </div>
+        <section className="control-panel">
+          <div className="mb-3">
+            <p className="eyebrow">COLLECTION FILTER</p>
+            <h2 className="section-heading">ตัวกรองคลังไอดี</h2>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {['ทั้งหมด', ...mainCategories].map((name) => {
+              const active = categoryFilter === name
+              const count = name === 'ทั้งหมด' ? accounts.length : accounts.filter((account) => categoryById.get(account.category_id) === name).length
+              return <button key={name} type="button" onClick={() => setCategoryFilter(name)} className={active ? 'filter-chip active' : 'filter-chip'}><CategoryLabel name={name} /> <span>{count}</span></button>
+            })}
+          </div>
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            <span className="mr-1 text-xs font-extrabold text-muted">สถานะ</span>
+            {['ทั้งหมด', 'เล่นแล้ว', 'ยังไม่เล่น'].map((name) => <button key={name} type="button" onClick={() => setStatusFilter(name)} className={statusFilter === name ? 'status-chip active' : 'status-chip'}>{name}</button>)}
+          </div>
+        </section>
+      </div>
+
+      <section className="category-strip">
         {categories.filter((category) => category.name === 'บัต Evo').map((category) => (
           <button
             key={category.id}
