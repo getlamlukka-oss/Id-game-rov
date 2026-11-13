@@ -114,11 +114,11 @@ export default function DashboardClient({ categories, accounts, dataError }: Pro
             <p className="eyebrow">FIND YOUR ACCOUNT</p>
             <h2 className="section-heading">ค้นหาไอดีเกม</h2>
           </div>
-          <span className="text-xs font-bold text-muted">{filteredAccounts.length} รายการ</span>
+          <span className="result-count" aria-live="polite">{filteredAccounts.length} รายการ</span>
         </div>
         <label className="search-shell">
           <svg viewBox="0 0 24 24" aria-hidden="true" className="size-5 shrink-0"><circle cx="10.8" cy="10.8" r="6.8" fill="none" stroke="currentColor" strokeWidth="2"/><path d="m16 16 5 5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
-          <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="ค้นหารหัสบัญชีหรือตัวละคร..." aria-label="ค้นหารหัสบัญชีหรือตัวละคร" />
+          <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="ค้นหารหัสไอดี ตัวละคร หรือหมายเหตุ..." aria-label="ค้นหารหัสไอดี ตัวละคร หรือหมายเหตุ" />
           {search && <button type="button" className="clear-search" onClick={() => setSearch('')} aria-label="ล้างคำค้น">×</button>}
         </label>
       </section>
