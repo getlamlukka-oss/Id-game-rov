@@ -37,13 +37,15 @@ export async function createGameAccount(input: AccountInput) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { success: false as const, error: 'เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่' }
 
-  const { error } = await supabase.from('game_accounts').insert({
+  const { data: created, error } = await supabase.from('game_accounts').insert({
     ...validation.value,
     user_id: user.id,
     image_path: null,
-  })
+  }).select('id').single()
 
   if (error) return { success: false as const, error: 'บันทึกไม่สำเร็จ: ' + error.message }
+  if (created?.id) await applyAutoTags(supabase, user.id, created.id, validation.value)
+  await recordAutomationEvent(supabase, user.id, 'account.created', created?.id || null, validation.value)
   revalidatePath('/')
   return { success: true as const }
 }
@@ -66,6 +68,8 @@ export async function updateGameAccount(accountId: string, input: AccountInput) 
 
   if (error) return { success: false as const, error: 'แก้ไขไม่สำเร็จ: ' + error.message }
   if (!data) return { success: false as const, error: 'ไม่พบบัญชีนี้ หรือไม่มีสิทธิ์แก้ไข' }
+  await applyAutoTags(supabase, user.id, accountId, validation.value)
+  await recordAutomationEvent(supabase, user.id, 'account.updated', accountId, validation.value)
   revalidatePath('/')
   return { success: true as const }
 }
@@ -85,6 +89,27 @@ export async function deleteGameAccount(accountId: string) {
 
   if (error) return { success: false as const, error: 'ลบไม่สำเร็จ: ' + error.message }
   if (!data) return { success: false as const, error: 'ไม่พบบัญชีนี้ หรือไม่มีสิทธิ์ลบ' }
+  await recordAutomationEvent(supabase, user.id, 'account.deleted', accountId, { account_id: accountId })
   revalidatePath('/')
   return { success: true as const }
+}
+
+// Optional until the Automation Center migration is installed.
+async function recordAutomationEvent(supabase: Awaited<ReturnType<typeof createClient>>, userId: string, eventType: string, accountId: string | null, payload: Record<string, unknown>) {
+  await supabase.from('automation_events').insert({ user_id: userId, event_type: eventType, account_id: accountId, payload })
+}
+
+async function applyAutoTags(supabase: Awaited<ReturnType<typeof createClient>>, userId: string, accountId: string, account: AccountInput) {
+  const { data: workflows } = await supabase.from('automation_workflows').select('id').eq('user_id', userId).eq('enabled', true).eq('action_type', 'auto_tag')
+  if (!workflows?.length) return
+  const { data: rules } = await supabase.from('automation_rules').select('workflow_id,field_name,operator,value,tag_name').in('workflow_id', workflows.map(workflow => workflow.id))
+  for (const rule of rules || []) {
+    const field = account[rule.field_name as keyof AccountInput] || ''
+    const source = String(field).toLowerCase()
+    const value = String(rule.value).toLowerCase()
+    const matches = rule.operator === 'equals' ? source === value : rule.operator === 'starts_with' ? source.startsWith(value) : source.includes(value)
+    if (!matches) continue
+    const { data: tag } = await supabase.from('account_tags').upsert({ user_id: userId, name: rule.tag_name }, { onConflict: 'user_id,name' }).select('id').single()
+    if (tag) await supabase.from('game_account_tags').upsert({ account_id: accountId, tag_id: tag.id }, { onConflict: 'account_id,tag_id' })
+  }
 }

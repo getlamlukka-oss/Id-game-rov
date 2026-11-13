@@ -91,3 +91,32 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .category-strip { min-height: 76px; margin-top: 14px; }
 .category-strip .special-category-tile { margin-top: 0; }
 @media (min-width: 820px) { .controls-layout { grid-template-columns: minmax(0, 1.15fr) minmax(360px, .85fr); align-items: stretch; } .control-panel { padding: 20px; } }
+
+.automation-hero { background: linear-gradient(120deg, rgb(255 254 250 / 98%), rgb(217 243 106 / 32%)); }
+.automation-grid { display: grid; gap: 14px; }
+.automation-card { min-width: 0; border: 1px solid rgb(23 25 29 / 13%); border-radius: 22px; padding: 20px; background: rgb(255 254 250 / 88%); box-shadow: 0 12px 26px rgb(48 51 37 / 7%); }
+.automation-card-lime { background: linear-gradient(145deg, rgb(217 243 106 / 72%), rgb(255 254 250 / 94%)); }
+.automation-card-coral { background: linear-gradient(145deg, rgb(245 161 142 / 60%), rgb(255 254 250 / 94%)); }
+.automation-title { margin-top: 5px; font-size: 23px; font-weight: 1000; letter-spacing: -.04em; }
+.automation-copy { max-width: 58ch; margin-top: 8px; color: var(--muted); font-size: 13px; font-weight: 600; line-height: 1.65; }
+.automation-form-row { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 14px; margin-top: 20px; }
+.toggle-row { display: inline-flex; min-height: 44px; align-items: center; gap: 9px; font-size: 12px; font-weight: 900; }
+.toggle-row input { width: 18px; height: 18px; accent-color: var(--accent); }
+.compact-field { min-width: 160px; }
+.compact-field input, .compact-field select { min-height: 40px !important; }
+.automation-note { margin-top: 12px; color: var(--muted); font-size: 11px; font-weight: 800; }
+.workflow-form { display: grid; gap: 13px; margin-top: 18px; }
+.workflow-fields { display: grid; gap: 12px; }
+.workflow-list, .event-list { display: grid; gap: 9px; margin-top: 18px; }
+.workflow-item, .event-item { display: flex; align-items: center; gap: 10px; border: 1px solid rgb(23 25 29 / 12%); border-radius: 13px; padding: 11px 12px; background: var(--ivory); }
+.workflow-item strong { font-size: 12px; font-weight: 1000; }
+.workflow-item p { margin-top: 3px; color: var(--muted); font-size: 11px; font-weight: 600; }
+.workflow-dot { width: 9px; height: 9px; flex: 0 0 9px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 0 3px rgb(217 243 106 / 25%); }
+.workflow-status { margin-left: auto; border-radius: 999px; padding: 5px 8px; background: var(--lime); font-size: 9px; font-weight: 1000; }
+.compact-state { min-height: 100px; margin-top: 18px; padding: 14px; font-size: 12px; }
+.automation-toast, .automation-warning { display: flex; flex-direction: column; gap: 4px; border: 1px solid #9aa85a; border-radius: 13px; padding: 12px 14px; background: #f4f8d9; color: #4f5e15; font-size: 12px; font-weight: 700; }
+.automation-warning { border-color: #c28472; background: #fff0ec; color: #7a3427; }
+.event-type { border-radius: 999px; padding: 5px 8px; background: var(--lime); font-size: 9px; font-weight: 1000; white-space: nowrap; }
+.event-payload { min-width: 0; overflow: hidden; text-overflow: ellipsis; font-size: 11px; font-weight: 800; }
+.event-item time { margin-left: auto; color: var(--muted); font-size: 10px; white-space: nowrap; }
+@media (min-width: 820px) { .automation-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .workflow-fields { grid-template-columns: 1fr 1fr 1fr; } }

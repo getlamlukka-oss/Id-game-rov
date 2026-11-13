@@ -29,6 +29,7 @@ export default async function Home() {
             </span>
           </Link>
           <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+            <Link href="/automation" className="button-quiet">Automation</Link>
             <span className="hidden max-w-44 truncate text-xs font-semibold text-muted sm:block">{user.email}</span>
             <span className="user-avatar">{user.email?.slice(0,1).toUpperCase() || 'U'}</span>
             <form action={logout}>
