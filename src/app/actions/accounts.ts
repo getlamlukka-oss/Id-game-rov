@@ -46,7 +46,7 @@ export async function createGameAccount(input: AccountInput) {
 
 export async function updateGameAccount(accountId: string, input: AccountInput) {
   const validation = validateInput(input)
-  if (!validation.value) return { success: false as const, error: validation.error }
+  if ('error' in validation) return { success: false as const, error: validation.error }
 
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
