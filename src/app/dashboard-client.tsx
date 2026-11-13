@@ -13,6 +13,15 @@ type FormValues = { game_id: string; game_name: string; category_id: string; not
 const mainCategories = ['กรอบ 6', 'กรอบ 7', 'กรอบแอส']
 const emptyForm: FormValues = { game_id: '', game_name: '', category_id: '', notes: '' }
 
+const frameByCategory: Record<string, string> = {
+  'กรอบ 6': '/account-frames/frame-krob6.webp',
+  'กรอบ 7': '/account-frames/frame-krob7.webp',
+  'กรอบแอส': '/account-frames/frame-krob-as.webp',
+}
+const categoryArtwork: Record<string, string> = {
+  'บัต Evo': '/category-art/but-evo.webp',
+}
+
 export default function DashboardClient({ categories, accounts, dataError }: Props) {
   const router = useRouter()
   const [search, setSearch] = useState('')
@@ -130,6 +139,22 @@ export default function DashboardClient({ categories, accounts, dataError }: Pro
           <span className="mr-1 text-xs font-extrabold text-muted">สถานะ</span>
           {['ทั้งหมด', 'เล่นแล้ว', 'รอบ 0'].map((name) => <button key={name} type="button" onClick={() => setStatusFilter(name)} className={statusFilter === name ? 'status-chip active' : 'status-chip'}>{name}</button>)}
         </div>
+        {categories.filter((category) => category.name === 'บัต Evo').map((category) => (
+          <button
+            key={category.id}
+            type="button"
+            aria-pressed={categoryFilter === category.name}
+            onClick={() => setCategoryFilter(categoryFilter === category.name ? 'ทั้งหมด' : category.name)}
+            className={categoryFilter === category.name ? 'special-category-tile active' : 'special-category-tile'}
+          >
+            <img src={categoryArtwork[category.name]} alt="" className="special-category-art" loading="lazy" />
+            <span className="min-w-0 text-left">
+              <span className="block text-[9px] font-black tracking-[.16em] text-muted">SPECIAL CATEGORY</span>
+              <span className="block text-sm font-black">บัต Evo</span>
+              <span className="block text-[10px] font-semibold text-muted">หมวดหมู่พิเศษ · {accounts.filter((account) => account.category_id === category.id).length} บัญชี</span>
+            </span>
+          </button>
+        ))}
       </section>
 
       <section className="mt-8" aria-labelledby="accounts-heading">
@@ -148,16 +173,32 @@ export default function DashboardClient({ categories, accounts, dataError }: Pro
             {filteredAccounts.map((account) => {
               const categoryName = categoryById.get(account.category_id) || 'อื่น ๆ'
               const played = categoryName === 'ไอดีเล่นแล้ว'
+              const frameSrc = frameByCategory[categoryName]
+              const isSpecialCategory = Boolean(categoryArtwork[categoryName])
               return (
                 <article key={account.id} className="account-card">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0">
-                      <p className="eyebrow">ROV ACCOUNT</p>
-                      <h3 className="mt-1 break-all text-lg font-black tracking-tight">{account.game_id}</h3>
+                  <div className="account-card-main">
+                    <div className={`account-avatar-wrap ${categoryName === 'กรอบ 7' ? 'account-avatar-rect' : ''} ${isSpecialCategory ? 'account-avatar-special' : ''}`}>
+                      {isSpecialCategory ? (
+                        <img src={categoryArtwork[categoryName]} alt="ภาพประจำหมวด บัต Evo" className="account-avatar-photo" loading="lazy" />
+                      ) : account.image_path ? (
+                        <img src={account.image_path} alt={`รูปโปรไฟล์ ${account.game_name}`} className="account-avatar-photo" loading="lazy" />
+                      ) : (
+                        <span className="account-avatar-placeholder" aria-hidden="true">{account.game_name.trim().slice(0, 1).toUpperCase() || 'R'}</span>
+                      )}
+                      {frameSrc && <img src={frameSrc} alt={`กรอบโปรไฟล์ ${categoryName}`} className="account-avatar-frame" loading="lazy" />}
                     </div>
-                    <span className={played ? 'account-status played' : 'account-status'}>{played ? 'เล่นแล้ว' : 'รอบ 0'}</span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="min-w-0">
+                          <p className="eyebrow">ROV ACCOUNT</p>
+                          <h3 className="mt-1 break-all text-lg font-black tracking-tight">{account.game_id}</h3>
+                        </div>
+                        <span className={played ? 'account-status played' : 'account-status'}>{played ? 'เล่นแล้ว' : 'รอบ 0'}</span>
+                      </div>
+                      <p className="mt-2 min-h-10 text-sm font-semibold leading-5 text-muted">{account.notes || 'ไม่มีรายละเอียดตัวละคร'}</p>
+                    </div>
                   </div>
-                  <p className="mt-3 min-h-10 text-sm font-semibold leading-5 text-muted">{account.notes || 'ไม่มีรายละเอียดตัวละคร'}</p>
                   <div className="mt-4 flex items-center justify-between gap-2 border-t border-ink/15 pt-3">
                     <span className="truncate rounded-md bg-cream px-2.5 py-1 text-[11px] font-extrabold">{categoryName === 'ไก่ปอง 810' ? '🎟️ ไก่ปอง 810' : categoryName}</span>
                     <span className="truncate text-[10px] font-bold uppercase tracking-wider text-muted">#{account.game_name}</span>
