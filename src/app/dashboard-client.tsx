@@ -14,8 +14,8 @@ const mainCategories = ['กรอบ 6', 'กรอบ 7', 'กรอบแอ�
 const emptyForm: FormValues = { game_id: '', game_name: '', category_id: '', notes: '' }
 
 const frameByCategory: Record<string, string> = {
-  'กรอบ 6': '/account-frames/frame-krob6.webp',
-  'กรอบ 7': '/account-frames/frame-krob7.webp',
+  'กรอบ 6': '/account-frames/frame-krob7.webp',
+  'กรอบ 7': '/account-frames/frame-krob6.webp',
   'กรอบแอส': '/account-frames/frame-krob-as.webp',
 }
 const categoryArtwork: Record<string, string> = {
