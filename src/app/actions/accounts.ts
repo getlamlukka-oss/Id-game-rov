@@ -10,24 +10,28 @@ type AccountInput = {
   notes: string
 }
 
-function validateInput(input: AccountInput) {
+type ValidationResult =
+  | { valid: true; value: AccountInput }
+  | { valid: false; error: string }
+
+function validateInput(input: AccountInput): ValidationResult {
   const game_id = input.game_id?.trim()
   const game_name = input.game_name?.trim()
   const category_id = input.category_id?.trim()
   const notes = input.notes?.trim() || ''
 
   if (!game_id || !game_name || !category_id) {
-    return { error: 'กรุณากรอกรหัสไอดี ชื่อตัวละคร และเลือกหมวดหมู่ให้ครบ' }
+    return { valid: false, error: 'กรุณากรอกรหัสไอดี ชื่อตัวละคร และเลือกหมวดหมู่ให้ครบ' }
   }
   if (game_id.length > 120 || game_name.length > 120 || notes.length > 2000) {
-    return { error: 'ข้อมูลยาวเกินกำหนด กรุณาตรวจสอบอีกครั้ง' }
+    return { valid: false, error: 'ข้อมูลยาวเกินกำหนด กรุณาตรวจสอบอีกครั้ง' }
   }
-  return { value: { game_id, game_name, category_id, notes } }
+  return { valid: true, value: { game_id, game_name, category_id, notes } }
 }
 
 export async function createGameAccount(input: AccountInput) {
   const validation = validateInput(input)
-  if ('error' in validation) return { success: false as const, error: validation.error }
+  if (!validation.valid) return { success: false as const, error: validation.error }
 
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -46,7 +50,7 @@ export async function createGameAccount(input: AccountInput) {
 
 export async function updateGameAccount(accountId: string, input: AccountInput) {
   const validation = validateInput(input)
-  if ('error' in validation) return { success: false as const, error: validation.error }
+  if (!validation.valid) return { success: false as const, error: validation.error }
 
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
