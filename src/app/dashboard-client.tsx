@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState, useTransition } from 'react'
+import { useMemo, useState, useTransition, type FormEvent, type ReactNode } from 'react'
 import { useRouter } from 'next/navigation'
 import { createGameAccount, deleteGameAccount, updateGameAccount } from '@/app/actions/accounts'
 
@@ -60,7 +60,7 @@ export default function DashboardClient({ categories, accounts, dataError }: Pro
     setFormError('')
   }
 
-  function handleSave(event: React.FormEvent<HTMLFormElement>) {
+  function handleSave(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setFormError('')
     startTransition(async () => {
@@ -213,7 +213,7 @@ export default function DashboardClient({ categories, accounts, dataError }: Pro
   )
 }
 
-function FormField({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
+function FormField({ label, required, children }: { label: string; required?: boolean; children: ReactNode }) {
   return <label className="form-field"><span>{label}{required ? ' *' : ''}</span>{children}</label>
 }
 
