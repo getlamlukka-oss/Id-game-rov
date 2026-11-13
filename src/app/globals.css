@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+@theme inline {
+  --color-ink: var(--ink);
+  --color-cream: var(--cream);
+  --color-ivory: var(--ivory);
+  --color-lime: var(--lime);
+  --color-coral: var(--coral);
+  --color-muted: var(--muted);
+}
+
 :root {
   --ivory: #F3EEDF;
   --ink: #171717;
