@@ -1,18 +1,28 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useTransition } from 'react'
+import { useRouter } from 'next/navigation'
+import { createGameAccount, deleteGameAccount, updateGameAccount } from '@/app/actions/accounts'
 
 export type Category = { id: string; name: string; description: string | null; cover_image_path: string | null }
 export type Account = { id: string; category_id: string; game_name: string; game_id: string; notes: string | null; image_path: string | null; created_at: string }
 
 type Props = { categories: Category[]; accounts: Account[]; dataError: string | null }
+type FormValues = { game_id: string; game_name: string; category_id: string; notes: string }
 
 const mainCategories = ['กรอบ 6', 'กรอบ 7', 'กรอบแอส']
+const emptyForm: FormValues = { game_id: '', game_name: '', category_id: '', notes: '' }
 
 export default function DashboardClient({ categories, accounts, dataError }: Props) {
+  const router = useRouter()
   const [search, setSearch] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('ทั้งหมด')
   const [statusFilter, setStatusFilter] = useState('ทั้งหมด')
+  const [formOpen, setFormOpen] = useState(false)
+  const [editingAccount, setEditingAccount] = useState<Account | null>(null)
+  const [formValues, setFormValues] = useState<FormValues>(emptyForm)
+  const [formError, setFormError] = useState('')
+  const [isPending, startTransition] = useTransition()
 
   const categoryById = useMemo(() => new Map(categories.map((category) => [category.id, category.name])), [categories])
   const playedCount = accounts.filter((account) => categoryById.get(account.category_id) === 'ไอดีเล่นแล้ว').length
@@ -27,6 +37,59 @@ export default function DashboardClient({ categories, accounts, dataError }: Pro
     const matchesSearch = !term || [account.game_id, account.game_name, account.notes, categoryName].some((value) => value?.toLocaleLowerCase().includes(term))
     return matchesCategory && matchesStatus && matchesSearch
   }), [accounts, categoryById, categoryFilter, statusFilter, search])
+
+  function openCreateForm() {
+    setEditingAccount(null)
+    setFormValues({ ...emptyForm, category_id: categories.find((category) => mainCategories.includes(category.name))?.id || categories[0]?.id || '' })
+    setFormError('')
+    setFormOpen(true)
+  }
+
+  function openEditForm(account: Account) {
+    setEditingAccount(account)
+    setFormValues({ game_id: account.game_id, game_name: account.game_name, category_id: account.category_id, notes: account.notes || '' })
+    setFormError('')
+    setFormOpen(true)
+  }
+
+  function closeForm() {
+    if (isPending) return
+    setFormOpen(false)
+    setEditingAccount(null)
+    setFormValues(emptyForm)
+    setFormError('')
+  }
+
+  function handleSave(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    setFormError('')
+    startTransition(async () => {
+      const result = editingAccount
+        ? await updateGameAccount(editingAccount.id, formValues)
+        : await createGameAccount(formValues)
+      if (!result.success) {
+        setFormError(result.error)
+        return
+      }
+      setFormOpen(false)
+      setEditingAccount(null)
+      setFormValues(emptyForm)
+      router.refresh()
+    })
+  }
+
+  function handleDelete(account: Account) {
+    const confirmed = window.confirm(`ยืนยันการลบไอดี ${account.game_id} ใช่หรือไม่? การลบนี้ไม่สามารถย้อนกลับได้`)
+    if (!confirmed) return
+    startTransition(async () => {
+      const result = await deleteGameAccount(account.id)
+      if (!result.success) {
+        window.alert(result.error)
+        return
+      }
+      router.refresh()
+    })
+  }
 
   return (
     <>
@@ -75,7 +138,7 @@ export default function DashboardClient({ categories, accounts, dataError }: Pro
             <p className="eyebrow">ACCOUNT LIBRARY</p>
             <h2 id="accounts-heading" className="section-heading">บัญชี ROV</h2>
           </div>
-          <span className="rounded-lg border-2 border-ink bg-white px-2.5 py-1 text-[11px] font-black">{filteredAccounts.length} / {accounts.length}</span>
+          <button type="button" className="button-primary" onClick={openCreateForm}>＋ เพิ่มไอดี</button>
         </div>
         {dataError ? <div className="state-panel">โหลดข้อมูลไม่สำเร็จ: {dataError}</div> : null}
         {!dataError && filteredAccounts.length === 0 ? (
@@ -97,7 +160,11 @@ export default function DashboardClient({ categories, accounts, dataError }: Pro
                   <p className="mt-3 min-h-10 text-sm font-semibold leading-5 text-muted">{account.notes || 'ไม่มีรายละเอียดตัวละคร'}</p>
                   <div className="mt-4 flex items-center justify-between gap-2 border-t border-ink/15 pt-3">
                     <span className="truncate rounded-md bg-cream px-2.5 py-1 text-[11px] font-extrabold">{categoryName === 'ไก่ปอง 810' ? '🎟️ ไก่ปอง 810' : categoryName}</span>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-muted">#{account.game_name}</span>
+                    <span className="truncate text-[10px] font-bold uppercase tracking-wider text-muted">#{account.game_name}</span>
+                  </div>
+                  <div className="mt-4 flex justify-end gap-2 border-t border-ink/10 pt-3">
+                    <button type="button" className="button-card-edit" onClick={() => openEditForm(account)}>แก้ไข</button>
+                    <button type="button" className="button-card-delete" onClick={() => handleDelete(account)} disabled={isPending}>ลบ</button>
                   </div>
                 </article>
               )
@@ -105,8 +172,49 @@ export default function DashboardClient({ categories, accounts, dataError }: Pro
           </div>
         )}
       </section>
+
+      {formOpen && (
+        <div className="modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) closeForm() }}>
+          <section className="account-modal" role="dialog" aria-modal="true" aria-labelledby="account-form-title">
+            <div className="mb-5 flex items-start justify-between gap-3">
+              <div>
+                <p className="eyebrow">ACCOUNT MANAGEMENT</p>
+                <h2 id="account-form-title" className="section-heading">{editingAccount ? 'แก้ไขไอดีเกม' : 'เพิ่มไอดีเกม'}</h2>
+              </div>
+              <button type="button" className="modal-close" onClick={closeForm} aria-label="ปิดหน้าต่าง" disabled={isPending}>×</button>
+            </div>
+            <form onSubmit={handleSave} className="flex flex-col gap-4">
+              <FormField label="รหัสไอดีเกม" required>
+                <input autoFocus required maxLength={120} value={formValues.game_id} onChange={(event) => setFormValues((current) => ({ ...current, game_id: event.target.value }))} placeholder="กรอกรหัสไอดีเกม" />
+              </FormField>
+              <FormField label="ชื่อตัวละคร / ชื่อบัญชี" required>
+                <input required maxLength={120} value={formValues.game_name} onChange={(event) => setFormValues((current) => ({ ...current, game_name: event.target.value }))} placeholder="กรอกชื่อที่ใช้เรียกบัญชี" />
+              </FormField>
+              <FormField label="หมวดหมู่" required>
+                <select required value={formValues.category_id} onChange={(event) => setFormValues((current) => ({ ...current, category_id: event.target.value }))}>
+                  <option value="" disabled>เลือกหมวดหมู่</option>
+                  {categories.map((category) => <option key={category.id} value={category.id}>{category.name === 'ไก่ปอง 810' ? '🎟️ ไก่ปอง 810' : category.name}</option>)}
+                </select>
+              </FormField>
+              <FormField label="หมายเหตุ">
+                <textarea rows={3} maxLength={2000} value={formValues.notes} onChange={(event) => setFormValues((current) => ({ ...current, notes: event.target.value }))} placeholder="รายละเอียดเพิ่มเติม (ไม่บังคับ)" />
+              </FormField>
+              {formError && <p className="form-error" role="alert">{formError}</p>}
+              <div className="mt-1 flex gap-2">
+                <button type="button" className="button-modal-cancel" onClick={closeForm} disabled={isPending}>ยกเลิก</button>
+                <button type="submit" className="button-primary flex-1" disabled={isPending || categories.length === 0}>{isPending ? 'กำลังบันทึก...' : editingAccount ? 'บันทึกการแก้ไข' : 'เพิ่มบัญชี'}</button>
+              </div>
+              {categories.length === 0 && <p className="text-xs font-semibold text-muted">ยังไม่มีหมวดหมู่ กรุณาสร้างหมวดหมู่ก่อนเพิ่มบัญชี</p>}
+            </form>
+          </section>
+        </div>
+      )}
     </>
   )
+}
+
+function FormField({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
+  return <label className="form-field"><span>{label}{required ? ' *' : ''}</span>{children}</label>
 }
 
 function Metric({ label, value, tone }: { label: string; value: number; tone: string }) {
