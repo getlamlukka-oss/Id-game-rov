@@ -237,7 +237,15 @@ export default function DashboardClient({ categories, accounts, dataError }: Pro
                                   <span className="rounded-full bg-lime px-2 py-0.5 text-[10px] font-black">{ownedSkins.length} สกิน</span>
                                 </div>
                                 <ul className="mt-2 grid grid-cols-1 gap-1.5 sm:grid-cols-2">
-                                  {ownedSkins.map((skin, index) => <li key={`${skin}-${index}`} className="rounded-lg bg-cream px-2.5 py-2 text-xs font-semibold leading-5">{skin}</li>)}
+                                  {ownedSkins.map((skin, index) => {
+                                    const skinArtworkIndex = skin.includes('Volkath') ? 0 : skin.includes('Cerulean Princess') ? 1 : skin.includes('Wave: Dark Current') ? 2 : skin.includes('Taara') ? 3 : skin.includes('Yena') ? 4 : -1
+                                    return (
+                                      <li key={`${skin}-${index}`} className="overflow-hidden rounded-lg bg-cream">
+                                        {skinArtworkIndex >= 0 ? <div role="img" aria-label={skin} className="aspect-[72/84] w-full bg-cover" style={{ backgroundImage: "url('/skins/owned-skins-strip.svg')", backgroundSize: '500% 100%', backgroundPosition: `${skinArtworkIndex * 25}% center` }} /> : null}
+                                        <p className="px-2.5 py-2 text-xs font-semibold leading-5">{skin}</p>
+                                      </li>
+                                    )
+                                  })}
                                 </ul>
                               </div>
                             ) : null}
