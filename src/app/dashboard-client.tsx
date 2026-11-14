@@ -16,7 +16,7 @@ const emptyForm: FormValues = { game_id: '', game_name: '', category_id: '', not
 const frameArtwork: Record<string, string> = {
   'กรอบ 6': '/account-frames/frame-krob7.webp',
   'กรอบ 7': '/account-frames/frame-krob6.webp',
-  'กรอบแอส': '/account-frames/frame-krob-as.webp',
+  'กรอบแอส': '/account-frames/frame-krob-as-gold.png',
 }
 const categoryArtwork: Record<string, string> = {
   'บัต Evo': '/category-art/but-evo.webp',
