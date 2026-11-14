@@ -21,7 +21,7 @@ function parseAccountNotes(notes: string | null) {
 
   const details = notes.slice(0, match.index).trim()
   const ownedSkins = notes.slice(match.index + match[0].length)
-    .split(/\\r?\\n/)
+    .split(/\r?\n/)
     .map((line) => line.trim())
     .filter((line) => line.startsWith('- '))
     .map((line) => line.slice(2).trim())
