@@ -185,13 +185,17 @@ export default function DashboardClient({ categories, accounts, dataError }: Pro
                     <div className={`account-avatar-wrap ${hasAssassinFrame ? 'account-avatar-wrap-shimmer' : ''}`}>
                       {account.image_path ? (
                         <img src={account.image_path} alt={`รูปโปรไฟล์ ${account.game_name}`} className="account-avatar-photo" loading="lazy" />
+                      ) : hasAssassinFrame ? (
+                        <span className="account-avatar-silhouette" aria-hidden="true" />
                       ) : (
                         <span className="account-avatar-placeholder" aria-hidden="true">{account.game_name.trim().slice(0, 1).toUpperCase() || 'R'}</span>
                       )}
                       {hasAssassinFrame ? (
                         <>
-                          <img src={frameArtwork['กรอบแอส']} alt="" aria-hidden="true" className="account-avatar-frame" loading="lazy" />
-                          <span className="account-avatar-shimmer" aria-hidden="true" />
+                          <img src={frameArtwork['กรอบแอส']} alt="" aria-hidden="true" className="account-avatar-frame account-avatar-frame-primary" loading="lazy" />
+                          <img src="/account-frames/frame-krob-as-shadow.webp" alt="" aria-hidden="true" className="account-avatar-frame account-avatar-frame-shadow" loading="lazy" />
+                          <span className="account-avatar-shimmer account-avatar-shimmer-primary" aria-hidden="true" />
+                          <span className="account-avatar-shimmer account-avatar-shimmer-shadow" aria-hidden="true" />
                         </>
                       ) : null}
                     </div>
