@@ -193,9 +193,10 @@ export default function DashboardClient({ categories, accounts, dataError }: Pro
                       {hasAssassinFrame ? (
                         <>
                           <img src={frameArtwork['กรอบแอส']} alt="" aria-hidden="true" className="account-avatar-frame account-avatar-frame-primary" loading="lazy" />
-                          <img src="/account-frames/frame-krob-as-shadow.webp" alt="" aria-hidden="true" className="account-avatar-frame account-avatar-frame-shadow" loading="lazy" />
+                          <img src="/account-frames/frame-krob-as-shadow-ref.webp" alt="" aria-hidden="true" className="account-avatar-frame account-avatar-frame-shadow" loading="lazy" />
                           <span className="account-avatar-shimmer account-avatar-shimmer-primary" aria-hidden="true" />
                           <span className="account-avatar-shimmer account-avatar-shimmer-shadow" aria-hidden="true" />
+                          <span className="account-avatar-swap-flash" aria-hidden="true" />
                         </>
                       ) : null}
                     </div>
