@@ -178,15 +178,22 @@ export default function DashboardClient({ categories, accounts, dataError }: Pro
             {filteredAccounts.map((account) => {
               const categoryName = categoryById.get(account.category_id) || 'อื่น ๆ'
               const played = categoryName === 'ไอดีเล่นแล้ว'
+              const hasAssassinFrame = categoryName === 'กรอบแอส'
               return (
                 <article key={account.id} className="account-card">
                   <div className="account-card-main">
-                    <div className="account-avatar-wrap">
+                    <div className={`account-avatar-wrap ${hasAssassinFrame ? 'account-avatar-wrap-shimmer' : ''}`}>
                       {account.image_path ? (
                         <img src={account.image_path} alt={`รูปโปรไฟล์ ${account.game_name}`} className="account-avatar-photo" loading="lazy" />
                       ) : (
                         <span className="account-avatar-placeholder" aria-hidden="true">{account.game_name.trim().slice(0, 1).toUpperCase() || 'R'}</span>
                       )}
+                      {hasAssassinFrame ? (
+                        <>
+                          <img src={frameArtwork['กรอบแอส']} alt="" aria-hidden="true" className="account-avatar-frame" loading="lazy" />
+                          <span className="account-avatar-shimmer" aria-hidden="true" />
+                        </>
+                      ) : null}
                     </div>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-start justify-between gap-2">
