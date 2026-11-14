@@ -13,6 +13,23 @@ type FormValues = { game_id: string; game_name: string; category_id: string; not
 const mainCategories = ['กรอบ 6', 'กรอบ 7', 'กรอบแอส']
 const emptyForm: FormValues = { game_id: '', game_name: '', category_id: '', notes: '' }
 
+function parseAccountNotes(notes: string | null) {
+  if (!notes) return { details: '', ownedSkins: [] as string[] }
+  const heading = /^สกินที่มีแล้ว:\s*$/m
+  const match = heading.exec(notes)
+  if (!match || match.index === undefined) return { details: notes.trim(), ownedSkins: [] as string[] }
+
+  const details = notes.slice(0, match.index).trim()
+  const ownedSkins = notes.slice(match.index + match[0].length)
+    .split(/\\r?\\n/)
+    .map((line) => line.trim())
+    .filter((line) => line.startsWith('- '))
+    .map((line) => line.slice(2).trim())
+    .filter(Boolean)
+
+  return { details, ownedSkins }
+}
+
 const frameArtwork: Record<string, string> = {
   'กรอบ 6': '/account-frames/frame-krob7.webp',
   'กรอบ 7': '/account-frames/frame-krob6.webp',
@@ -208,7 +225,25 @@ export default function DashboardClient({ categories, accounts, dataError }: Pro
                         </div>
                         <span className={played ? 'account-status played' : 'account-status'}>{played ? 'เล่นแล้ว' : 'ยังไม่เล่น'}</span>
                       </div>
-                      <p className="mt-2 min-h-10 text-sm font-semibold leading-5 text-muted">{account.notes || 'ไม่มีรายละเอียดตัวละคร'}</p>
+                      {(() => {
+                        const { details, ownedSkins } = parseAccountNotes(account.notes)
+                        return (
+                          <>
+                            <p className="mt-2 min-h-10 text-sm font-semibold leading-5 text-muted">{details || (ownedSkins.length === 0 ? 'ไม่มีรายละเอียดตัวละคร' : '')}</p>
+                            {ownedSkins.length > 0 ? (
+                              <div className="mt-4 rounded-xl border border-ink/15 bg-ivory/70 p-3">
+                                <div className="flex items-center justify-between gap-2">
+                                  <p className="text-xs font-black">สกินที่มีแล้ว</p>
+                                  <span className="rounded-full bg-lime px-2 py-0.5 text-[10px] font-black">{ownedSkins.length} สกิน</span>
+                                </div>
+                                <ul className="mt-2 grid grid-cols-1 gap-1.5 sm:grid-cols-2">
+                                  {ownedSkins.map((skin, index) => <li key={`${skin}-${index}`} className="rounded-lg bg-cream px-2.5 py-2 text-xs font-semibold leading-5">{skin}</li>)}
+                                </ul>
+                              </div>
+                            ) : null}
+                          </>
+                        )
+                      })()}
                     </div>
                   </div>
                   <div className="mt-4 flex items-center justify-between gap-2 border-t border-ink/15 pt-3">
