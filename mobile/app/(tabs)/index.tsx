@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
-import { FlatList, Pressable, RefreshControl, StyleSheet, Text, TextInput, View } from "react-native";
+import { FlatList, Pressable, RefreshControl, StyleSheet, Text, TextInput, View, type StyleProp, type ViewStyle } from "react-native";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import { Card, Chip, Heading, StateMessage } from "@/components/Primitives";
 import { supabase } from "@/lib/supabase";
@@ -120,7 +120,7 @@ export default function LibraryScreen() {
   );
 }
 
-function Metric({ label, value, tone }: { label: string; value: number; tone: object }) {
+function Metric({ label, value, tone }: { label: string; value: number; tone: StyleProp<ViewStyle> }) {
   return <View style={[styles.metric, tone]}><Text style={styles.metricLabel}>{label}</Text><Text style={styles.metricValue}>{value}</Text></View>;
 }
 
