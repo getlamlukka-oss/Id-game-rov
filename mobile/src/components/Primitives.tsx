@@ -1,11 +1,11 @@
-import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View, type TextInputProps, type PropsWithChildren } from "react-native";
+import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View, type TextInputProps, type PropsWithChildren, type StyleProp, type ViewStyle } from "react-native";
 import { colors, radius } from "@/theme";
 
 export function Screen({ children }: PropsWithChildren) {
   return <View style={styles.screen}>{children}</View>;
 }
 
-export function Card({ children, style }: PropsWithChildren<{ style?: object }>) {
+export function Card({ children, style }: PropsWithChildren<{ style?: StyleProp<ViewStyle> }>) {
   return <View style={[styles.card, style]}>{children}</View>;
 }
 
