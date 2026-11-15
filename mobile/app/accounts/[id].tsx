@@ -1,8 +1,7 @@
 import { useCallback, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
-import { Redirect } from "expo-router";
+import { Redirect, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useAuth } from "@/auth/AuthProvider";
-import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { Card, StateMessage } from "@/components/Primitives";
 import { supabase } from "@/lib/supabase";
 import { parseAccountNotes, type Category, type GameAccount } from "@/types";
