@@ -41,4 +41,4 @@ Supabase Auth session persistence follows the official React Native quickstart a
 
 ## Verification status
 
-The source files are committed, but dependencies have not been installed and no Expo typecheck, Metro bundle, Android emulator, or physical-device run has been performed in this environment.
+Verified in GitHub Actions on the feature branch: npm dependency installation completed, TypeScript check passed, and Metro successfully exported the Android JavaScript bundle. The export used placeholder Supabase environment values; it did not test live authentication or database access. No APK/AAB has been built, and no Android emulator or physical-device test has been performed.
