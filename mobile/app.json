@@ -1,0 +1,23 @@
+{
+  "expo": {
+    "name": "ROV ID Manager",
+    "slug": "rov-id-manager",
+    "scheme": "rovidmanager",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "plugins": ["expo-router"],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#F5F5F0"
+      }
+    },
+    "ios": {
+      "supportsTablet": true
+    }
+  }
+}
