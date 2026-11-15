@@ -225,9 +225,10 @@ Safety scope:
 - Automation Center and Discord settings are not included in the first slice. No webhook or service-role credential is shipped to the client.
 - The mobile client uses AsyncStorage for Supabase session persistence, following the current official React Native quickstart. AsyncStorage is not encrypted; the README documents this trade-off.
 
-Not yet verified:
-- No dependency installation, TypeScript check, Metro export, Android emulator run, or physical-device run has been completed from this environment.
-- No APK/AAB has been built or deployed.
+Verification completed:
+- GitHub Actions run #14 succeeded: npm dependency installation, Expo SDK dependency compatibility check, TypeScript check, and Android Metro bundle export all passed.
+- The CI export used placeholder Supabase environment values. Live sign-in and database access have not been tested.
+- No APK/AAB has been built or deployed, and no Android emulator or physical-device test has been completed.
 - The app still requires the existing Supabase project URL and publishable key in a local `mobile/.env` file.
 
-This is an initial read-only mobile client, not a finished production release. The next gate is automated typecheck/bundle validation, followed by an Android device test.
+This is a validated initial read-only mobile client, not a finished production release. The next gate is a real Supabase sign-in and Android device test.
