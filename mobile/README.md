@@ -10,9 +10,10 @@ A separate Expo / React Native client for the existing ROV ID Manager Supabase p
 - Search by game ID, character name, notes, and category.
 - Category and played-status filters.
 - Account detail view, including the existing notes and owned-skin note format.
+- Light theme matching the existing web brand palette.
 - Category counts and account counts.
 
-Account create, edit, and delete are intentionally not enabled in this first mobile slice. The current web Server Actions also apply auto-tags and record automation events. Direct mobile writes would bypass that business logic. A shared authenticated server endpoint must be implemented and tested before enabling mutations.
+Account create, edit, and delete are intentionally not enabled in this first mobile slice. Account/category artwork and Storage image previews are also not rendered yet; existing image paths may refer to private Storage objects and must be converted to owner-authorized signed URLs before display. The current web Server Actions also apply auto-tags and record automation events. Direct mobile writes would bypass that business logic. A shared authenticated server endpoint must be implemented and tested before enabling mutations.
 
 Automation / Discord settings are also excluded from this first slice. Discord webhook URLs and service-role credentials must remain server-side.
 
