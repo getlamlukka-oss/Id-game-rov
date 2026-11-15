@@ -16,7 +16,7 @@ export default function RootLayout() {
         }}
       >
         <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="sign-in" options={{ title: "เข้าสู่ระบบ", presentation: "modal" }} />
+        <Stack.Screen name="sign-in" options={{ title: "เข้าสู่ระบบ", presentation: "card" }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="accounts/[id]" options={{ title: "รายละเอียดบัญชี" }} />
       </Stack>
