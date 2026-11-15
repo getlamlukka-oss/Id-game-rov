@@ -43,3 +43,11 @@ node_modules/
 .next/
 .env
 .env.local
+
+# Expo / React Native
+/mobile/node_modules/
+/mobile/.expo/
+/mobile/dist/
+/mobile/android/
+/mobile/ios/
+!mobile/.env.example
