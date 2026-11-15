@@ -1,5 +1,7 @@
 import { useCallback, useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { Redirect } from "expo-router";
+import { useAuth } from "@/auth/AuthProvider";
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { Card, StateMessage } from "@/components/Primitives";
 import { supabase } from "@/lib/supabase";
@@ -8,6 +10,7 @@ import { colors } from "@/theme";
 
 export default function AccountDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const { user, loading: authLoading, configReady } = useAuth();
   const [account, setAccount] = useState<GameAccount | null>(null);
   const [category, setCategory] = useState<Category | null>(null);
   const [loading, setLoading] = useState(true);
@@ -43,6 +46,8 @@ export default function AccountDetailScreen() {
 
   useFocusEffect(useCallback(() => { void load(); }, [load]));
 
+  if (authLoading) return <StateMessage title="กำลังตรวจสอบเซสชัน" loading />;
+  if (!configReady || !user) return <Redirect href="/sign-in" />;
   if (loading) return <StateMessage title="กำลังโหลดรายละเอียดบัญชี" loading />;
   if (error || !account) return <StateMessage title="เปิดบัญชีนี้ไม่ได้" body={error} />;
 
