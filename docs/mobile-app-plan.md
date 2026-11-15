@@ -20,12 +20,24 @@ Target: a separate Expo + React Native application for Android and iOS, while ke
 
 ### Not confirmed; must be checked before implementation
 
-- The complete schema and RLS policies for the pre-existing `categories` and `game_accounts` tables are not defined in the migration file present in this repository.
-- Supabase Storage bucket names, upload policies, and image lifecycle are not established by the inspected files.
-- The deployed web origin, Supabase project configuration, and production environment variables were not inspected.
+- The deployed web origin and production environment variables were not inspected. No secrets or environment values were requested or read.
+- Storage upload lifecycle and whether existing `image_path` values are object paths or signed URLs still need to be confirmed.
 - There is no verified simulator/emulator run or release build for a mobile app yet.
 
-Do not infer missing database policies or create replacement tables. Verify the live Supabase schema and policies before connecting the mobile client.
+Do not infer missing database policies or create replacement tables. The connected Supabase project was inspected read-only after this repository review; the verified findings are recorded below.
+
+
+### Live Supabase inspection (read-only)
+
+The connected Supabase project named `game-id-manager` was inspected without changing its schema or data:
+
+- `categories`: 5 rows; RLS enabled; columns include `id`, `user_id`, `name`, `description`, `cover_image_path`, timestamps. SELECT/INSERT/UPDATE/DELETE policies restrict rows to `auth.uid() = user_id` and target the `authenticated` role.
+- `game_accounts`: 52 rows; RLS enabled; columns match the fields used by the web UI and include `user_id` and `updated_at`. SELECT/INSERT/UPDATE/DELETE policies restrict rows to the authenticated owner. A composite foreign key ties `category_id` and `user_id` to the same category owner.
+- All seven Automation Center tables exist and have RLS enabled. The owner predicates are present. Their current policies are declared for the `public` role with `auth.uid() = user_id` (or an ownership EXISTS check), rather than explicitly targeting `authenticated`. This does not grant anonymous users an owner identity, but it should be reviewed and tightened to `TO authenticated` as a separate security-hardening change before release; do not silently alter it as part of the mobile UI work.
+- Private Storage buckets `category-covers` and `game-images` exist. Both allow JPEG, PNG, and WebP up to 5 MiB. Storage object policies restrict access to the authenticated user's UID-prefixed folder for read, upload, update, and delete.
+- The schema inspection showed no existing mobile-specific API or shared account-mutation function. Current auto-tag and event behavior remains in the Next.js Server Action.
+
+This confirms that the current account tables are suitable for authenticated, owner-scoped mobile reads once the app uses the publishable key and a real user session. It does **not** justify bypassing RLS or embedding privileged credentials.
 
 ## 2. Recommended architecture
 
