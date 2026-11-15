@@ -1,4 +1,5 @@
-import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View, type TextInputProps, type PropsWithChildren, type StyleProp, type ViewStyle } from "react-native";
+import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View, type TextInputProps, type StyleProp, type ViewStyle } from "react-native";
+import type { PropsWithChildren } from "react";
 import { colors, radius } from "@/theme";
 
 export function Screen({ children }: PropsWithChildren) {
