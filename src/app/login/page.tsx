@@ -6,21 +6,21 @@ export default async function LoginPage({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
   const params = await searchParams
-  const errorMessage = params.message as string
+  const hasLoginError = Boolean(params.message)
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-4 bg-zinc-950 text-white">
       <div className="w-full max-w-sm rounded-2xl border border-white/10 bg-zinc-900/80 p-8 shadow-xl">
         <div className="mb-8 text-center">
           <span className="mx-auto mb-4 grid size-12 place-items-center rounded-xl bg-violet-500 text-2xl shadow-lg shadow-violet-500/20">🎮</span>
-          <h1 className="text-2xl font-bold">ยินดีต้อนรับกลับมา</h1>
-          <p className="mt-2 text-sm text-zinc-400">เข้าสู่ระบบเพื่อจัดการคลังไอดีเกมของคุณ</p>
+          <h1 className="text-2xl font-bold">เข้าสู่ระบบ</h1>
+          <p className="mt-2 text-sm text-zinc-400">เข้าสู่ระบบเพื่อดูและจัดการไอดี RoV ของคุณ</p>
         </div>
 
         {/* แสดงข้อความ Error ถ้ามีการ Login ผิดพลาด */}
-        {errorMessage && (
+        {hasLoginError && (
           <div className="mb-4 rounded-lg border border-red-500/20 bg-red-500/10 p-3 text-center text-sm text-red-400">
-            {errorMessage}
+            เข้าสู่ระบบไม่สำเร็จ กรุณาตรวจสอบอีเมลและรหัสผ่านอีกครั้ง
           </div>
         )}
 
