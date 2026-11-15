@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from "react-native";
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Redirect } from "expo-router";
 import { useAuth } from "@/auth/AuthProvider";
 import { Card, Heading, PrimaryButton, StateMessage, TextField } from "@/components/Primitives";
 import { colors } from "@/theme";
 
 export default function SignInScreen() {
-  const { signIn, configReady, loading } = useAuth();
+  const { signIn, configReady, loading, user } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -18,6 +19,8 @@ export default function SignInScreen() {
     setSubmitting(false);
     if (message) setError(message);
   }
+
+  if (user) return <Redirect href="/(tabs)" />;
 
   if (!configReady) {
     return (
