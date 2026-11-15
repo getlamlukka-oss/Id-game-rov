@@ -205,4 +205,29 @@ Before implementation, confirm:
 - Whether account image upload is required in the first release.
 - Whether the Automation Center and Discord reporting must be included in the first mobile release, or can follow after the account library.
 
-Until those checks are complete, this document is the implementation plan only. No native app has been built, tested, or deployed.
+## 8. Implementation status (2026-11-15)
+
+A first native read-only client has now been scaffolded in `mobile/` on the feature branch.
+
+Implemented source:
+- Expo SDK 57 / React Native 0.86 / React 19.2 / Expo Router.
+- Supabase email/password sign-in with session persistence and foreground token refresh, using the official React Native client setup and the publishable key.
+- Auth guard on the root route and tab navigator.
+- Read-only library list, search across game ID / character / notes / category, played-status filter, summary counts, and pull-to-refresh.
+- Category list with live account counts; selecting a category opens the library with that category filter.
+- Account detail view with the existing notes and owned-skin text format.
+- Settings screen with the signed-in email and sign-out.
+- `mobile/.env.example` and setup instructions.
+
+Safety scope:
+- No database schema, RLS, Auth setting, Storage policy, or existing account data was modified.
+- Account create/edit/delete are deliberately disabled in this first slice because the existing web Server Actions also run auto-tag matching and record automation events. Direct client writes would bypass that behavior.
+- Automation Center and Discord settings are not included in the first slice. No webhook or service-role credential is shipped to the client.
+- The mobile client uses AsyncStorage for Supabase session persistence, following the current official React Native quickstart. AsyncStorage is not encrypted; the README documents this trade-off.
+
+Not yet verified:
+- No dependency installation, TypeScript check, Metro export, Android emulator run, or physical-device run has been completed from this environment.
+- No APK/AAB has been built or deployed.
+- The app still requires the existing Supabase project URL and publishable key in a local `mobile/.env` file.
+
+This is an initial read-only mobile client, not a finished production release. The next gate is automated typecheck/bundle validation, followed by an Android device test.
