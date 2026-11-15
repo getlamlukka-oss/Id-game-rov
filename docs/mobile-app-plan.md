@@ -37,6 +37,8 @@ The connected Supabase project named `game-id-manager` was inspected without cha
 - Private Storage buckets `category-covers` and `game-images` exist. Both allow JPEG, PNG, and WebP up to 5 MiB. Storage object policies restrict access to the authenticated user's UID-prefixed folder for read, upload, update, and delete.
 - The schema inspection showed no existing mobile-specific API or shared account-mutation function. Current auto-tag and event behavior remains in the Next.js Server Action.
 
+- Supabase Security Advisor currently reports **Leaked Password Protection Disabled**. Enable leaked-password protection in Supabase Auth settings before public release; this is a project-level setting and was not changed during this review. See https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection.
+
 This confirms that the current account tables are suitable for authenticated, owner-scoped mobile reads once the app uses the publishable key and a real user session. It does **not** justify bypassing RLS or embedding privileged credentials.
 
 ## 2. Recommended architecture
