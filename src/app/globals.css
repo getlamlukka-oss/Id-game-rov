@@ -140,3 +140,11 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .event-payload { min-width: 0; overflow: hidden; text-overflow: ellipsis; font-size: 11px; font-weight: 800; }
 .event-item time { margin-left: auto; color: var(--muted); font-size: 10px; white-space: nowrap; }
 @media (min-width: 820px) { .automation-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .workflow-fields { grid-template-columns: 1fr 1fr 1fr; } }
+
+/* Keep the primary navigation usable on narrow mobile screens. */
+@media (max-width: 480px) {
+  .site-header { flex-wrap: wrap; }
+  .site-header-actions { width: 100%; justify-content: flex-end; }
+  .site-header-actions .user-avatar { display: none; }
+  .site-header-actions .button-quiet { padding: 8px 10px; font-size: 10px; }
+}

@@ -120,7 +120,7 @@ export default function DashboardClient({ categories, accounts, dataError }: Pro
   return (
     <>
       <section className="mt-6 grid grid-cols-3 gap-2 sm:gap-4" aria-label="สรุปบัญชี">
-        <Metric label="บัญชีทั้งหมด" value={accounts.length} tone="metric-lime" />
+        <Metric label="ไอดีทั้งหมด" value={accounts.length} tone="metric-lime" />
         <Metric label="เล่นแล้ว" value={playedCount} tone="metric-coral" />
         <Metric label="ยังไม่เล่น" value={notPlayedCount} tone="metric-cream" />
       </section>
@@ -129,22 +129,22 @@ export default function DashboardClient({ categories, accounts, dataError }: Pro
         <section className="control-panel">
           <div className="mb-3 flex items-end justify-between gap-3">
             <div>
-              <p className="eyebrow">FIND YOUR ACCOUNT</p>
-              <h2 className="section-heading">ค้นหาไอดีเกม</h2>
+              <p className="eyebrow">ค้นหาไอดี</p>
+              <h2 className="section-heading">ค้นหาไอดี</h2>
             </div>
             <span className="result-count" aria-live="polite">{filteredAccounts.length} รายการ</span>
           </div>
           <label className="search-shell">
             <svg viewBox="0 0 24 24" aria-hidden="true" className="size-5 shrink-0"><circle cx="10.8" cy="10.8" r="6.8" fill="none" stroke="currentColor" strokeWidth="2"/><path d="m16 16 5 5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
-            <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="ค้นหารหัสไอดี ตัวละคร หรือหมายเหตุ..." aria-label="ค้นหารหัสไอดี ตัวละคร หรือหมายเหตุ" />
+            <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="ค้นหาจากรหัสไอดี ชื่อบัญชี หรือรายละเอียด..." aria-label="ค้นหาจากรหัสไอดี ชื่อบัญชี หรือรายละเอียด" />
             {search && <button type="button" className="clear-search" onClick={() => setSearch('')} aria-label="ล้างคำค้น">×</button>}
           </label>
         </section>
 
         <section className="control-panel">
           <div className="mb-3">
-            <p className="eyebrow">COLLECTION FILTER</p>
-            <h2 className="section-heading">ตัวกรองคลังไอดี</h2>
+            <p className="eyebrow">ตัวเลือกการค้นหา</p>
+            <h2 className="section-heading">เลือกหมวดหมู่และสถานะ</h2>
           </div>
           <div className="flex flex-wrap gap-2">
             {['ทั้งหมด', ...mainCategories].map((name) => {
@@ -171,9 +171,9 @@ export default function DashboardClient({ categories, accounts, dataError }: Pro
           >
             <img src={categoryArtwork[category.name]} alt="" className="special-category-art" loading="lazy" />
             <span className="min-w-0 text-left">
-              <span className="block text-[9px] font-black tracking-[.16em] text-muted">SPECIAL CATEGORY</span>
+              <span className="block text-[9px] font-black tracking-[.16em] text-muted">หมวดหมู่พิเศษ</span>
               <span className="block text-sm font-black"><CategoryLabel name="บัต Evo" /></span>
-              <span className="block text-[10px] font-semibold text-muted">หมวดหมู่พิเศษ · {accounts.filter((account) => account.category_id === category.id).length} บัญชี</span>
+              <span className="block text-[10px] font-semibold text-muted">{accounts.filter((account) => account.category_id === category.id).length} ไอดี</span>
             </span>
           </button>
         ))}
@@ -182,14 +182,14 @@ export default function DashboardClient({ categories, accounts, dataError }: Pro
       <section className="mt-8" aria-labelledby="accounts-heading">
         <div className="mb-4 flex items-end justify-between gap-3">
           <div>
-            <p className="eyebrow">ACCOUNT LIBRARY</p>
-            <h2 id="accounts-heading" className="section-heading">บัญชี ROV</h2>
+            <p className="eyebrow">รายการในคลัง</p>
+            <h2 id="accounts-heading" className="section-heading">รายการไอดี RoV</h2>
           </div>
           <button type="button" className="button-primary" onClick={openCreateForm}>＋ เพิ่มไอดี</button>
         </div>
-        {dataError ? <div className="state-panel">โหลดข้อมูลไม่สำเร็จ: {dataError}</div> : null}
+        {dataError ? <div className="state-panel"><strong>โหลดข้อมูลไม่สำเร็จ</strong><span className="text-sm text-muted">กรุณารีเฟรชหน้าเว็บ หากยังพบปัญหาให้ลองใหม่ภายหลัง</span></div> : null}
         {!dataError && filteredAccounts.length === 0 ? (
-          <div className="state-panel"><span className="text-3xl">⌕</span><strong>ไม่พบไอดีที่ค้นหา</strong><span className="text-sm text-muted">ลองเปลี่ยนคำค้นหาหรือตัวกรอง</span></div>
+          <div className="state-panel"><span className="text-3xl">⌕</span><strong>ไม่พบไอดีที่ตรงกับเงื่อนไข</strong><span className="text-sm text-muted">ลองเปลี่ยนคำค้นหาหรือตัวกรอง</span></div>
         ) : (
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
             {filteredAccounts.map((account) => {
@@ -220,7 +220,7 @@ export default function DashboardClient({ categories, accounts, dataError }: Pro
                     <div className="min-w-0 flex-1">
                       <div className="flex items-start justify-between gap-2">
                         <div className="min-w-0">
-                          <p className="eyebrow">ROV ACCOUNT</p>
+                          <p className="eyebrow">ไอดี RoV</p>
                           <h3 className="mt-1 break-all text-lg font-black tracking-tight">{account.game_id}</h3>
                         </div>
                         <span className={played ? 'account-status played' : 'account-status'}>{played ? 'เล่นแล้ว' : 'ยังไม่เล่น'}</span>
@@ -274,7 +274,7 @@ export default function DashboardClient({ categories, accounts, dataError }: Pro
           <section className="account-modal" role="dialog" aria-modal="true" aria-labelledby="account-form-title">
             <div className="mb-5 flex items-start justify-between gap-3">
               <div>
-                <p className="eyebrow">ACCOUNT MANAGEMENT</p>
+                <p className="eyebrow">จัดการข้อมูลไอดี</p>
                 <h2 id="account-form-title" className="section-heading">{editingAccount ? 'แก้ไขไอดีเกม' : 'เพิ่มไอดีเกม'}</h2>
               </div>
               <button type="button" className="modal-close" onClick={closeForm} aria-label="ปิดหน้าต่าง" disabled={isPending}>×</button>
@@ -292,15 +292,15 @@ export default function DashboardClient({ categories, accounts, dataError }: Pro
                   {categories.map((category) => <option key={category.id} value={category.id}>{category.name === 'ไก่ปอง 810' ? '🎟️ ไก่ปอง 810' : category.name}</option>)}
                 </select>
               </FormField>
-              <FormField label="หมายเหตุ">
+              <FormField label="รายละเอียดเพิ่มเติม (ไม่บังคับ)">
                 <textarea rows={3} maxLength={2000} value={formValues.notes} onChange={(event) => setFormValues((current) => ({ ...current, notes: event.target.value }))} placeholder="รายละเอียดเพิ่มเติม (ไม่บังคับ)" />
               </FormField>
               {formError && <p className="form-error" role="alert">{formError}</p>}
               <div className="mt-1 flex gap-2">
                 <button type="button" className="button-modal-cancel" onClick={closeForm} disabled={isPending}>ยกเลิก</button>
-                <button type="submit" className="button-primary flex-1" disabled={isPending || categories.length === 0}>{isPending ? 'กำลังบันทึก...' : editingAccount ? 'บันทึกการแก้ไข' : 'เพิ่มบัญชี'}</button>
+                <button type="submit" className="button-primary flex-1" disabled={isPending || categories.length === 0}>{isPending ? 'กำลังบันทึกข้อมูล...' : editingAccount ? 'บันทึกการแก้ไข' : 'บันทึกไอดี'}</button>
               </div>
-              {categories.length === 0 && <p className="text-xs font-semibold text-muted">ยังไม่มีหมวดหมู่ กรุณาสร้างหมวดหมู่ก่อนเพิ่มบัญชี</p>}
+              {categories.length === 0 && <p className="text-xs font-semibold text-muted">ยังไม่มีหมวดหมู่ กรุณาติดต่อผู้ดูแลระบบก่อนเพิ่มไอดี</p>}
             </form>
           </section>
         </div>

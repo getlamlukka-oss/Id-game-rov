@@ -29,7 +29,7 @@ export default function AutomationClient({ settings, workflows, events, disabled
   async function addWorkflow(event: React.FormEvent) {
     event.preventDefault(); setSaving(true); setStatus('')
     const result = await createWorkflow({ name, keyword, tagName, fieldName })
-    setStatus(result.success ? 'สร้าง Workflow แล้ว' : result.error)
+    setStatus(result.success ? 'สร้างกฎอัตโนมัติ แล้ว' : result.error)
     if (result.success) { setName(''); setKeyword(''); setTagName('') }
     setSaving(false)
   }
@@ -37,7 +37,7 @@ export default function AutomationClient({ settings, workflows, events, disabled
   return <>
     <section className="automation-grid mt-6">
       <article className="automation-card automation-card-lime">
-        <div className="eyebrow">01 / DAILY REPORT ENGINE</div>
+        <div className="eyebrow">01 / รายงานประจำวัน</div>
         <h2 className="automation-title">รายงานประจำวัน</h2>
         <p className="automation-copy">สรุปจำนวนไอดี, กิจกรรมล่าสุด และการเปลี่ยนแปลงของวันนั้น ส่งทุกวันตามเวลาไทย</p>
         <div className="automation-form-row"><label className="toggle-row"><input type="checkbox" checked={reportEnabled} onChange={e => setReportEnabled(e.target.checked)} disabled={disabled} /><span>เปิดใช้งานรายงาน</span></label><label className="form-field compact-field">เวลาไทย<input type="time" value={reportTime} onChange={e => setReportTime(e.target.value)} disabled={disabled || !reportEnabled} /></label></div>
@@ -45,31 +45,31 @@ export default function AutomationClient({ settings, workflows, events, disabled
       </article>
 
       <article className="automation-card automation-card-coral">
-        <div className="eyebrow">02 / DISCORD DELIVERY</div>
-        <h2 className="automation-title">Discord Summary-only</h2>
-        <p className="automation-copy">ส่งเฉพาะรายงานสรุป ไม่ส่งกิจกรรมเพิ่ม/แก้ไข/ลบแบบเรียลไทม์ และ Webhook จะไม่ถูกแสดงกลับหลังบันทึก</p>
+        <div className="eyebrow">02 / ส่งรายงานไป Discord</div>
+        <h2 className="automation-title">ส่งรายงานสรุปไป Discord</h2>
+        <p className="automation-copy">ส่งเฉพาะรายงานสรุป ไม่ส่งประวัติการเพิ่ม แก้ไข หรือลบไอดี และจะไม่แสดง Webhook หลังบันทึก</p>
         <label className="toggle-row"><input type="checkbox" checked={discordEnabled} onChange={e => setDiscordEnabled(e.target.checked)} disabled={disabled} /><span>เปิดส่งรายงานเข้า Discord</span></label>
-        <label className="form-field compact-field mt-3">Discord Webhook URL<input type="password" value={webhook} onChange={e => setWebhook(e.target.value)} placeholder="https://discord.com/api/webhooks/..." disabled={disabled || !discordEnabled} autoComplete="new-password" /></label>
+        <label className="form-field compact-field mt-3">ลิงก์เชื่อมต่อ Discord (Webhook)<input type="password" value={webhook} onChange={e => setWebhook(e.target.value)} placeholder="https://discord.com/api/webhooks/..." disabled={disabled || !discordEnabled} autoComplete="new-password" /></label>
         <div className="automation-note">ความปลอดภัย: ใส่ในช่องนี้เท่านั้น ห้าม commit ลง GitHub</div>
       </article>
     </section>
 
     <section className="automation-grid mt-4">
       <article className="automation-card">
-        <div className="eyebrow">03 / WORKFLOW BUILDER</div><h2 className="automation-title">สร้างกฎ Auto-tag</h2><p className="automation-copy">เมื่อ game ID, ชื่อตัวละคร หรือโน้ตมีคีย์เวิร์ด ระบบจะติดแท็กให้อัตโนมัติหลังบันทึกไอดี</p>
+        <div className="eyebrow">03 / สร้างกฎอัตโนมัติ</div><h2 className="automation-title">สร้างกฎติดป้ายกำกับอัตโนมัติ</h2><p className="automation-copy">เมื่อรหัสไอดี ชื่อบัญชี หรือรายละเอียดมีคำที่กำหนด ระบบจะเพิ่มป้ายกำกับให้อัตโนมัติหลังบันทึกไอดี</p>
         <form onSubmit={addWorkflow} className="workflow-form">
-          <label className="form-field">ชื่อ Workflow<input value={name} onChange={e => setName(e.target.value)} placeholder="เช่น ไอดีแรงค์สูง" disabled={disabled} /></label>
-          <div className="workflow-fields"><label className="form-field">ตรวจจาก<select value={fieldName} onChange={e => setFieldName(e.target.value)} disabled={disabled}><option value="notes">โน้ต</option><option value="game_name">ชื่อตัวละคร</option><option value="game_id">รหัสไอดี</option></select></label><label className="form-field">มีคำว่า<input value={keyword} onChange={e => setKeyword(e.target.value)} placeholder="เช่น Master" disabled={disabled} /></label><label className="form-field">ติดแท็ก<input value={tagName} onChange={e => setTagName(e.target.value)} placeholder="เช่น RANK-MASTER" disabled={disabled} /></label></div>
+          <label className="form-field">ชื่อกฎ<input value={name} onChange={e => setName(e.target.value)} placeholder="เช่น ไอดีแรงค์สูง" disabled={disabled} /></label>
+          <div className="workflow-fields"><label className="form-field">ตรวจสอบจาก<select value={fieldName} onChange={e => setFieldName(e.target.value)} disabled={disabled}><option value="notes">โน้ต</option><option value="game_name">ชื่อตัวละคร</option><option value="game_id">รหัสไอดี</option></select></label><label className="form-field">มีข้อความว่า<input value={keyword} onChange={e => setKeyword(e.target.value)} placeholder="เช่น Master" disabled={disabled} /></label><label className="form-field">เพิ่มป้ายกำกับ<input value={tagName} onChange={e => setTagName(e.target.value)} placeholder="เช่น RANK-MASTER" disabled={disabled} /></label></div>
           <button className="button-primary" disabled={disabled || saving}>{saving ? 'กำลังบันทึก...' : 'สร้าง Workflow'}</button>
         </form>
       </article>
 
       <article className="automation-card">
-        <div className="eyebrow">04 / LIVE CONFIG</div><h2 className="automation-title">Workflow ที่เปิดใช้งาน</h2>
-        {workflows.length ? <div className="workflow-list">{workflows.map(workflow => <div className="workflow-item" key={workflow.id}><span className="workflow-dot" /><div><strong>{workflow.name}</strong><p>{workflow.description || 'Auto-tag rule'}</p></div><span className="workflow-status">{workflow.enabled ? 'ON' : 'OFF'}</span></div>)}</div> : <div className="state-panel compact-state">ยังไม่มี Workflow · สร้างกฎแรกทางซ้าย</div>}
+        <div className="eyebrow">04 / กฎที่ตั้งค่าไว้</div><h2 className="automation-title">กฎที่ตั้งค่าไว้</h2>
+        {workflows.length ? <div className="workflow-list">{workflows.map(workflow => <div className="workflow-item" key={workflow.id}><span className="workflow-dot" /><div><strong>{workflow.name}</strong><p>{workflow.description || 'Auto-tag rule'}</p></div><span className="workflow-status">{workflow.enabled ? 'ON' : 'OFF'}</span></div>)}</div> : <div className="state-panel compact-state">ยังไม่มีกฎอัตโนมัติ · สร้างกฎแรกได้จากแบบฟอร์มนี้</div>}
       </article>
     </section>
 
-    <section className="automation-card mt-4"><div className="flex flex-wrap items-end justify-between gap-3"><div><div className="eyebrow">05 / EVENT STREAM</div><h2 className="automation-title">Activity log</h2></div><button className="button-primary" onClick={saveSettings} disabled={disabled || saving}>{saving ? 'กำลังบันทึก...' : 'บันทึกการตั้งค่าทั้งหมด'}</button></div>{status && <div className="automation-toast mt-3" role="status">{status}</div>}{events.length ? <div className="event-list">{events.map(event => <div className="event-item" key={event.id}><span className="event-type">{event.event_type}</span><span className="event-payload">{String(event.payload?.game_name || event.payload?.game_id || 'account event')}</span><time>{new Date(event.created_at).toLocaleString('th-TH')}</time></div>)}</div> : <div className="state-panel compact-state mt-4">ยังไม่มี Event log · เมื่อ migration เสร็จ กิจกรรมจะถูกบันทึกอัตโนมัติ</div>}</section>
+    <section className="automation-card mt-4"><div className="flex flex-wrap items-end justify-between gap-3"><div><div className="eyebrow">05 / ประวัติการทำงาน</div><h2 className="automation-title">ประวัติการทำงาน</h2></div><button className="button-primary" onClick={saveSettings} disabled={disabled || saving}>{saving ? 'กำลังบันทึก...' : 'บันทึกการตั้งค่าทั้งหมด'}</button></div>{status && <div className="automation-toast mt-3" role="status">{status}</div>}{events.length ? <div className="event-list">{events.map(event => <div className="event-item" key={event.id}><span className="event-type">{event.event_type}</span><span className="event-payload">{String(event.payload?.game_name || event.payload?.game_id || 'account event')}</span><time>{new Date(event.created_at).toLocaleString('th-TH')}</time></div>)}</div> : <div className="state-panel compact-state mt-4">ยังไม่มีประวัติ · ระบบจะเริ่มบันทึกเมื่อเตรียมฐานข้อมูลเรียบร้อยแล้ว</div>}</section>
   </>
 }

@@ -25,11 +25,11 @@ export default async function Home() {
             <span className="brand-mark">R</span>
             <span className="min-w-0">
               <span className="block truncate text-base font-black tracking-tight sm:text-lg">ROV ID MANAGER</span>
-              <span className="block text-[10px] font-bold tracking-[.2em] text-muted">PERSONAL GAME VAULT</span>
+              <span className="block text-[10px] font-bold tracking-[.2em] text-muted">คลังเก็บไอดีส่วนตัว</span>
             </span>
           </Link>
-          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-            <Link href="/automation" className="button-quiet">Automation</Link>
+          <div className="site-header-actions flex shrink-0 items-center gap-2 sm:gap-3">
+            <Link href="/automation" className="button-quiet">ตั้งค่าอัตโนมัติ</Link>
             <span className="hidden max-w-44 truncate text-xs font-semibold text-muted sm:block">{user.email}</span>
             <span className="user-avatar">{user.email?.slice(0,1).toUpperCase() || 'U'}</span>
             <form action={logout}>
@@ -41,10 +41,10 @@ export default async function Home() {
         <section className="hero-panel mt-5 overflow-hidden sm:mt-6">
           <div className="relative z-10 max-w-2xl">
             <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-ink/20 bg-cream/70 px-3 py-1 text-[10px] font-black tracking-[.18em]">
-              <span className="size-2 rounded-full bg-lime" /> YOUR ROV COLLECTION
+              <span className="size-2 rounded-full bg-lime" /> คลังไอดี RoV
             </div>
             <h1 className="max-w-xl text-3xl font-black leading-[1.08] tracking-tight sm:text-5xl">คลังไอดีของคุณ</h1>
-            <p className="mt-3 max-w-lg text-sm font-medium leading-6 text-muted sm:text-base">ค้นหาและจัดการบัญชี ROV ได้ง่ายขึ้นในที่เดียว</p>
+            <p className="mt-3 max-w-lg text-sm font-medium leading-6 text-muted sm:text-base">ค้นหา เพิ่ม และจัดระเบียบไอดี RoV ได้ในที่เดียว</p>
           </div>
           <div className="hero-stamp" aria-hidden="true">ROV<br/><span>ID VAULT</span></div>
         </section>
