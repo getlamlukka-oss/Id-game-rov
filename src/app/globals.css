@@ -195,3 +195,140 @@ body { background: #f5f5f2; }
 @media (max-width:380px) { .dashboard-summary { gap:9px; } .dashboard-summary > span { padding-left:8px; font-size:10px; } .account-card { padding:10px; gap:7px; } .account-actions { gap:4px; } .button-card-edit,.button-card-delete { padding-inline:7px; } }
 @media (min-width:640px) { .site-header { margin-inline:-24px; padding-inline:24px; } .account-list { grid-template-columns:repeat(2,minmax(0,1fr)); } .account-card { align-items:flex-start; } .account-actions { flex-direction:row; } }
 @media (min-width:900px) { .account-list { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+
+
+/* Refined visual pass: calm, editorial account library */
+:root {
+  --ivory: #f3f0e7;
+  --cream: #fffdf8;
+  --ink: #24251f;
+  --muted: #858477;
+  --accent: #66733d;
+  --lime: #dce8a5;
+  --coral: #e9b3a3;
+}
+body {
+  background:
+    radial-gradient(ellipse at 8% 0%, rgb(220 232 165 / 24%), transparent 34rem),
+    #f3f0e7;
+  letter-spacing: -.01em;
+}
+.site-header {
+  border-bottom: 1px solid rgb(36 37 31 / 8%);
+  background: rgb(243 240 231 / 88%);
+}
+.brand-mark {
+  display: grid; place-items: center; width: 38px; height: 38px;
+  border-radius: 12px; background: #24251f; color: #f3f0e7;
+  font-family: Georgia, serif; font-size: 21px; font-weight: 500;
+}
+.site-header a span span:first-child { letter-spacing: -.045em; }
+.button-quiet {
+  border-color: rgb(36 37 31 / 11%); background: rgb(255 253 248 / 72%);
+  color: #55564c; font-weight: 700;
+}
+.button-quiet:hover { border-color: rgb(36 37 31 / 28%); background: #fffdf8; }
+.user-avatar { background: #e3e5d6; color: #525b36; font-weight: 800; }
+.dashboard-intro {
+  display: grid; gap: 18px; margin: 24px 0 20px; padding: 22px;
+  border: 1px solid rgb(36 37 31 / 8%); border-radius: 22px;
+  background: linear-gradient(125deg, #fffdf8 0%, #faf8ef 72%, #edf0df 100%);
+  box-shadow: 0 14px 36px rgb(48 47 34 / 5%);
+}
+.dashboard-intro .eyebrow { color: #83836e; font-size: 9px; letter-spacing: .2em; }
+.dashboard-intro h1 {
+  margin-top: 7px; color: #292a23; font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(27px, 6vw, 36px); font-weight: 500; letter-spacing: -.055em; line-height: 1.08;
+}
+.dashboard-intro-copy { margin-top: 7px; color: #858477; font-size: 12px; line-height: 1.6; }
+.dashboard-summary {
+  display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 8px;
+  margin: 0; color: #77776b;
+}
+.dashboard-summary > div {
+  display: flex; min-width: 0; flex-direction: column; gap: 3px;
+  padding: 12px 11px; border: 1px solid rgb(36 37 31 / 8%);
+  border-radius: 13px; background: rgb(255 255 255 / 66%);
+}
+.dashboard-summary .summary-total { background: #e9edda; }
+.dashboard-summary strong { color: #2b2c25; font-size: 22px; font-weight: 650; letter-spacing: -.06em; line-height: 1; }
+.dashboard-summary span { color: #77776b; font-size: 10px; font-weight: 600; }
+.library-toolbar {
+  gap: 13px; padding: 16px; border: 1px solid rgb(36 37 31 / 8%);
+  border-radius: 18px; background: rgb(255 253 248 / 76%);
+  box-shadow: 0 10px 28px rgb(48 47 34 / 4%);
+}
+.search-shell {
+  height: 49px; border: 1px solid rgb(36 37 31 / 10%);
+  border-radius: 12px; background: #fff; box-shadow: 0 2px 8px rgb(48 47 34 / 3%);
+}
+.search-shell:focus-within { border-color: #8a9662; box-shadow: 0 0 0 3px rgb(138 150 98 / 13%); }
+.search-shell input { color: #303128; font-weight: 500; }
+.filter-chip {
+  border-color: rgb(36 37 31 / 9%); border-radius: 10px;
+  background: #fff; color: #66665b; font-weight: 700;
+}
+.filter-chip.active {
+  border-color: #34372b; background: #34372b; color: #fffdf8;
+}
+.filter-chip span { background: rgb(128 130 105 / 12%); }
+.filter-chip.active span { background: rgb(255 255 255 / 16%); color: #fff; }
+.status-row { color: #858477; }
+.status-chip { border-color: rgb(36 37 31 / 9%); border-radius: 9px; color: #66665b; }
+.status-chip.active { border-color: #d9dfc2; background: #e9edda; color: #4d5831; }
+.special-category-tile {
+  margin-top: 12px; border-color: rgb(36 37 31 / 8%); border-radius: 14px;
+  background: #fffdf8; box-shadow: 0 5px 16px rgb(48 47 34 / 4%);
+}
+.special-category-tile.active { background: #e9edda; box-shadow: none; }
+.special-category-art { border-radius: 9px; }
+.accounts-heading-row { margin: 26px 0 13px; }
+.accounts-heading-row h2 {
+  color: #2b2c25; font-family: Georgia, "Times New Roman", serif;
+  font-size: 22px; font-weight: 500; letter-spacing: -.045em;
+}
+.button-primary {
+  border: 1px solid #34372b; border-radius: 10px; background: #34372b;
+  color: #fffdf8; box-shadow: 0 4px 10px rgb(36 37 31 / 10%); font-weight: 700;
+}
+.button-primary:hover:not(:disabled) { background: #4b5139; box-shadow: 0 6px 14px rgb(36 37 31 / 13%); }
+.button-quiet { border-radius: 10px; }
+.account-list { gap: 10px; }
+.account-card {
+  align-items: center; border: 1px solid rgb(36 37 31 / 8%);
+  border-radius: 15px; padding: 14px; background: #fffdf9;
+  box-shadow: 0 4px 14px rgb(48 47 34 / 3%);
+}
+.account-card:hover { border-color: rgb(36 37 31 / 16%); box-shadow: 0 8px 20px rgb(48 47 34 / 6%); }
+.compact-avatar { border-radius: 11px; background: #f0efe8; }
+.account-title-line h3 { color: #292a23; font-size: 14px; font-weight: 750; letter-spacing: -.025em; }
+.account-status { border-radius: 7px; padding: 4px 7px; background: #edf0df; color: #59643a; font-weight: 700; }
+.account-status.played { background: #f5e9e3; color: #9a6758; }
+.account-name { color: #77776b; }
+.account-notes { color: #89897e; }
+.account-meta { color: #66675b; }
+.button-card-edit,.button-card-delete {
+  border-color: rgb(36 37 31 / 9%); border-radius: 8px; background: #f7f6f0;
+  color: #55564c; font-weight: 700;
+}
+.button-card-delete { background: #fbf2ee; color: #986c5e; }
+.state-panel { border-color: #d2d0c3; color: #77776b; font-weight: 600; }
+.account-modal {
+  border: 1px solid rgb(36 37 31 / 10%); border-radius: 20px;
+  background: #f8f6ef; box-shadow: 0 24px 70px rgb(20 20 16 / 22%);
+}
+.form-field input,.form-field select,.form-field textarea {
+  border: 1px solid rgb(36 37 31 / 13%); border-radius: 10px; background: #fffdf9;
+}
+.modal-close { border: 1px solid rgb(36 37 31 / 12%); border-radius: 9px; background: #fffdf9; }
+@media (min-width: 640px) {
+  .dashboard-intro { grid-template-columns: 1fr minmax(280px, .9fr); align-items: end; padding: 28px; }
+  .dashboard-summary { align-self: end; }
+  .account-list { gap: 12px; }
+  .account-card { padding: 16px; }
+}
+@media (max-width: 380px) {
+  .dashboard-intro { padding: 17px; }
+  .dashboard-summary > div { padding: 10px 8px; }
+  .dashboard-summary strong { font-size: 19px; }
+}
