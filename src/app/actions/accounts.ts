@@ -47,7 +47,7 @@ export async function createGameAccount(input: AccountInput) {
   if (created?.id) await applyAutoTags(supabase, user.id, created.id, validation.value)
   await recordAutomationEvent(supabase, user.id, 'account.created', created?.id || null, validation.value)
   revalidatePath('/')
-  return { success: true as const }
+  return { success: true as const, id: created.id }
 }
 
 export async function updateGameAccount(accountId: string, input: AccountInput) {
@@ -71,7 +71,7 @@ export async function updateGameAccount(accountId: string, input: AccountInput) 
   await applyAutoTags(supabase, user.id, accountId, validation.value)
   await recordAutomationEvent(supabase, user.id, 'account.updated', accountId, validation.value)
   revalidatePath('/')
-  return { success: true as const }
+  return { success: true as const, id: accountId }
 }
 
 export async function deleteGameAccount(accountId: string) {
@@ -169,4 +169,55 @@ export async function bulkCreateGameAccounts(rows: { game_id: string; game_name:
   }
   revalidatePath('/')
   return { success: true as const, inserted: toInsert.length, skippedExisting, skippedInFile: duplicateInFile }
+}
+
+
+export async function uploadGameAccountImage(accountId: string, formData: FormData) {
+  const file = formData.get('image')
+  if (!(file instanceof File) || file.size === 0) return { success: false as const, error: 'กรุณาเลือกรูปภาพ' }
+  const allowedTypes: Record<string, string> = {
+    'image/jpeg': 'jpg',
+    'image/png': 'png',
+    'image/webp': 'webp',
+  }
+  const extension = allowedTypes[file.type]
+  if (!extension) return { success: false as const, error: 'รองรับเฉพาะ JPG, PNG และ WebP' }
+  if (file.size > 5 * 1024 * 1024) return { success: false as const, error: 'รูปภาพต้องมีขนาดไม่เกิน 5 MB' }
+
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { success: false as const, error: 'เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่' }
+
+  const { data: account, error: accountError } = await supabase
+    .from('game_accounts')
+    .select('id,image_path')
+    .eq('id', accountId)
+    .eq('user_id', user.id)
+    .maybeSingle()
+  if (accountError || !account) return { success: false as const, error: 'ไม่พบบัญชีนี้ หรือไม่มีสิทธิ์แก้ไข' }
+
+  const path = user.id + '/' + accountId + '/' + crypto.randomUUID() + '.' + extension
+  const { error: uploadError } = await supabase.storage.from('game-images').upload(path, file, {
+    contentType: file.type,
+    cacheControl: '3600',
+    upsert: false,
+  })
+  if (uploadError) return { success: false as const, error: 'อัปโหลดไม่สำเร็จ: ' + uploadError.message }
+
+  const { error: updateError } = await supabase
+    .from('game_accounts')
+    .update({ image_path: path })
+    .eq('id', accountId)
+    .eq('user_id', user.id)
+  if (updateError) {
+    await supabase.storage.from('game-images').remove([path])
+    return { success: false as const, error: 'บันทึกรูปไม่สำเร็จ: ' + updateError.message }
+  }
+
+  const oldPath = account.image_path
+  if (oldPath && oldPath.startsWith(user.id + '/')) {
+    await supabase.storage.from('game-images').remove([oldPath])
+  }
+  revalidatePath('/')
+  return { success: true as const }
 }
