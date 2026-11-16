@@ -433,3 +433,25 @@ footer { color: #929183; letter-spacing: .12em; }
   html { scroll-behavior: auto; }
   .login-submit, .button-primary, .button-card-edit, .button-card-delete { transition: none; }
 }
+
+
+/* Account quick filters, copy action and image upload */
+.account-actions { flex-wrap: wrap; }
+.button-card-copy {
+  min-height: 30px; padding: 5px 9px; border: 1px solid rgb(102 115 61 / 20%);
+  border-radius: 8px; background: #edf0df; color: #59643b; font-size: 10px; font-weight: 800;
+  white-space: nowrap; transition: background .18s ease, transform .18s ease;
+}
+.button-card-copy:hover { background: #e2e8c9; transform: translateY(-1px); }
+.form-field input[type="file"] {
+  width: 100%; min-height: 44px; border: 1px dashed rgb(43 44 35 / 20%);
+  border-radius: 11px; padding: 9px; background: #fffefa; color: #68685d; font-size: 12px;
+}
+.form-field input[type="file"]::file-selector-button {
+  margin-right: 10px; border: 0; border-radius: 8px; padding: 7px 10px;
+  background: #e9edda; color: #4e5934; font-size: 11px; font-weight: 800;
+}
+@media (max-width: 480px) {
+  .account-actions { flex-direction: row; align-items: center; justify-content: flex-end; }
+  .button-card-copy, .button-card-edit, .button-card-delete { min-height: 34px; }
+}
