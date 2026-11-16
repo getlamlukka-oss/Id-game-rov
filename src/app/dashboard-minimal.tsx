@@ -1,0 +1,51 @@
+'use client'
+import { useMemo, useState, useTransition, type FormEvent } from 'react'
+import { useRouter } from 'next/navigation'
+import { createGameAccount, deleteGameAccount, updateGameAccount } from '@/app/actions/accounts'
+
+type Category={id:string;name:string;description:string|null;cover_image_path:string|null}
+type Account={id:string;category_id:string;game_name:string;game_id:string;notes:string|null;image_path:string|null;created_at:string}
+type Values={game_id:string;game_name:string;category_id:string;notes:string}
+const mainCategories=['กรอบ 6','กรอบ 7','กรอบแอส']
+const frames:Record<string,string>={'กรอบ 6':'/account-frames/frame-krob7.webp','กรอบ 7':'/account-frames/frame-krob6.webp','กรอบแอส':'/account-frames/frame-krob-as-gold-detail-v2.webp','บัต Evo':'/category-art/but-evo.webp'}
+const empty:Values={game_id:'',game_name:'',category_id:'',notes:''}
+function CategoryName({name}:{name:string}){return <span className="inline-flex items-center gap-1.5">{frames[name]&&<img src={frames[name]} alt="" className="size-5 object-contain"/>}{name==='ไก่ปอง 810'?'🎟️ ไก่ปอง 810':name}</span>}
+function Field({label,children}:{label:string;children:React.ReactNode}){return <label className="form-field"><span>{label}</span>{children}</label>}
+
+export default function DashboardMinimal({categories,accounts,dataError}:{categories:Category[];accounts:Account[];dataError:string|null}){
+ const router=useRouter()
+ const [search,setSearch]=useState('')
+ const [category,setCategory]=useState('ทั้งหมด')
+ const [status,setStatus]=useState('ทั้งหมด')
+ const [open,setOpen]=useState(false)
+ const [editing,setEditing]=useState<Account|null>(null)
+ const [values,setValues]=useState<Values>(empty)
+ const [error,setError]=useState('')
+ const [pending,startTransition]=useTransition()
+ const names=useMemo(()=>new Map(categories.map(c=>[c.id,c.name])),[categories])
+ const played=accounts.filter(a=>names.get(a.category_id)==='ไอดีเล่นแล้ว').length
+ const filtered=useMemo(()=>accounts.filter(a=>{
+  const c=names.get(a.category_id)||''
+  const isPlayed=c==='ไอดีเล่นแล้ว'
+  const term=search.trim().toLocaleLowerCase()
+  return (category==='ทั้งหมด'||c===category)&&(status==='ทั้งหมด'||(status==='เล่นแล้ว'&&isPlayed)||(status==='ยังไม่เล่น'&&!isPlayed))&&(!term||[a.game_id,a.game_name,a.notes,c].some(v=>v?.toLocaleLowerCase().includes(term)))
+ }),[accounts,names,category,status,search])
+ function create(){setEditing(null);setValues({...empty,category_id:categories.find(c=>mainCategories.includes(c.name))?.id||categories[0]?.id||''});setError('');setOpen(true)}
+ function edit(a:Account){setEditing(a);setValues({game_id:a.game_id,game_name:a.game_name,category_id:a.category_id,notes:a.notes||''});setError('');setOpen(true)}
+ function close(){if(!pending){setOpen(false);setEditing(null);setValues(empty);setError('')}}
+ function save(e:FormEvent<HTMLFormElement>){e.preventDefault();setError('');startTransition(async()=>{const r=editing?await updateGameAccount(editing.id,values):await createGameAccount(values);if(!r.success){setError(r.error);return}setOpen(false);setEditing(null);setValues(empty);router.refresh()})}
+ function remove(a:Account){if(!window.confirm('ยืนยันการลบไอดี '+a.game_id+' ใช่หรือไม่? การลบนี้ไม่สามารถย้อนกลับได้'))return;startTransition(async()=>{const r=await deleteGameAccount(a.id);if(!r.success){window.alert(r.error);return}router.refresh()})}
+ return <>
+  <section className="dashboard-summary"><strong>{accounts.length} <small>บัญชีทั้งหมด</small></strong><span>{played} เล่นแล้ว</span><span>{accounts.length-played} ยังไม่เล่น</span></section>
+  <section className="library-toolbar">
+   <label className="search-shell"><svg viewBox="0 0 24 24" aria-hidden="true" className="size-5 shrink-0"><circle cx="10.8" cy="10.8" r="6.8" fill="none" stroke="currentColor" strokeWidth="2"/><path d="m16 16 5 5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="ค้นหารหัสไอดี ชื่อตัวละคร หรือหมายเหตุ" aria-label="ค้นหาบัญชี"/>{search&&<button type="button" onClick={()=>setSearch('')} aria-label="ล้างคำค้น">×</button>}</label>
+   <div className="filter-scroll">{['ทั้งหมด',...mainCategories].map(n=><button key={n} type="button" onClick={()=>setCategory(n)} className={category===n?'filter-chip active':'filter-chip'}><CategoryName name={n}/><span>{n==='ทั้งหมด'?accounts.length:accounts.filter(a=>names.get(a.category_id)===n).length}</span></button>)}</div>
+   <div className="status-row"><span>สถานะ</span>{['ทั้งหมด','เล่นแล้ว','ยังไม่เล่น'].map(n=><button key={n} type="button" onClick={()=>setStatus(n)} className={status===n?'status-chip active':'status-chip'}>{n}</button>)}<small>{filtered.length} รายการ</small></div>
+  </section>
+  {categories.filter(c=>c.name==='บัต Evo').map(c=><button key={c.id} type="button" className={category===c.name?'special-category-tile active':'special-category-tile'} onClick={()=>setCategory(category===c.name?'ทั้งหมด':c.name)}><img src={frames['บัต Evo']} alt="" className="special-category-art"/><span><b>บัต Evo</b><small>หมวดพิเศษ · {accounts.filter(a=>a.category_id===c.id).length} บัญชี</small></span></button>)}
+  <section className="mt-6"><div className="accounts-heading-row"><h2>บัญชีของฉัน</h2><button className="button-primary" type="button" onClick={create}>＋ เพิ่มบัญชี</button></div>
+   {dataError?<div className="state-panel">โหลดข้อมูลไม่สำเร็จ: {dataError}</div>:filtered.length===0?<div className="state-panel">ไม่พบไอดีที่ค้นหา</div>:<div className="account-list">{filtered.map(a=>{const c=names.get(a.category_id)||'อื่น ๆ';const isPlayed=c==='ไอดีเล่นแล้ว';const notes=a.notes||'';const details=notes.split(/^สกินที่มีแล้ว:\s*$/m)[0].trim();const skins=notes.match(/^สกินที่มีแล้ว:\s*\n([\s\S]*)/m)?.[1].split(/\r?\n/).filter(x=>x.startsWith('- ')).map(x=>x.slice(2))||[];return <article className="account-card" key={a.id}><div className="account-card-main"><div className="compact-avatar">{a.image_path?<img src={a.image_path} alt="" loading="lazy"/>:<span>{a.game_name.trim().slice(0,1).toUpperCase()||'R'}</span>}</div><div className="min-w-0 flex-1"><div className="account-title-line"><h3>{a.game_id}</h3><span className={isPlayed?'account-status played':'account-status'}>{isPlayed?'เล่นแล้ว':'ยังไม่เล่น'}</span></div><p className="account-name">{a.game_name}</p>{details&&<p className="account-notes">{details}</p>}{skins.length>0&&<details className="owned-skins"><summary>สกินที่มีแล้ว · {skins.length}</summary><p>{skins.join(' · ')}</p></details>}<div className="account-meta"><CategoryName name={c}/></div></div></div><div className="account-actions"><button type="button" className="button-card-edit" onClick={()=>edit(a)}>แก้ไข</button><button type="button" className="button-card-delete" onClick={()=>remove(a)} disabled={pending}>ลบ</button></div></article>})}</div>}
+  </section>
+  {open&&<div className="modal-backdrop" role="presentation" onMouseDown={e=>{if(e.target===e.currentTarget)close()}}><section className="account-modal" role="dialog" aria-modal="true" aria-labelledby="form-title"><div className="mb-5 flex justify-between"><div><p className="eyebrow">จัดการบัญชี</p><h2 id="form-title" className="section-heading">{editing?'แก้ไขบัญชี':'เพิ่มบัญชี'}</h2></div><button type="button" className="modal-close" onClick={close} disabled={pending}>×</button></div><form onSubmit={save} className="flex flex-col gap-4"><Field label="รหัสไอดีเกม"><input required maxLength={120} value={values.game_id} onChange={e=>setValues(v=>({...v,game_id:e.target.value}))}/></Field><Field label="ชื่อตัวละคร / ชื่อบัญชี"><input required maxLength={120} value={values.game_name} onChange={e=>setValues(v=>({...v,game_name:e.target.value}))}/></Field><Field label="หมวดหมู่"><select required value={values.category_id} onChange={e=>setValues(v=>({...v,category_id:e.target.value}))}><option value="" disabled>เลือกหมวดหมู่</option>{categories.map(c=><option key={c.id} value={c.id}>{c.name==='ไก่ปอง 810'?'🎟️ ไก่ปอง 810':c.name}</option>)}</select></Field><Field label="หมายเหตุ"><textarea rows={3} maxLength={2000} value={values.notes} onChange={e=>setValues(v=>({...v,notes:e.target.value}))}/></Field>{error&&<p className="form-error" role="alert">{error}</p>}<div className="flex gap-2"><button type="button" className="button-modal-cancel" onClick={close} disabled={pending}>ยกเลิก</button><button type="submit" className="button-primary flex-1" disabled={pending||categories.length===0}>{pending?'กำลังบันทึก...':'บันทึก'}</button></div></form></section></div>}
+ </>
+}
