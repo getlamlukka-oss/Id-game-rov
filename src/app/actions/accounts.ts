@@ -113,3 +113,60 @@ async function applyAutoTags(supabase: Awaited<ReturnType<typeof createClient>>,
     if (tag) await supabase.from('game_account_tags').upsert({ account_id: accountId, tag_id: tag.id }, { onConflict: 'account_id,tag_id' })
   }
 }
+
+
+export async function bulkCreateGameAccounts(rows: { game_id: string; game_name: string; category_name: string }[]) {
+  if (!Array.isArray(rows) || rows.length === 0) return { success: false as const, error: 'ไม่พบรายการสำหรับนำเข้า' }
+  if (rows.length > 100) return { success: false as const, error: 'นำเข้าได้ไม่เกิน 100 รายการต่อครั้ง' }
+  const normalized = rows.map(row => ({
+    game_id: typeof row.game_id === 'string' ? row.game_id.trim() : '',
+    game_name: typeof row.game_name === 'string' ? row.game_name.trim() : '',
+    category_name: typeof row.category_name === 'string' ? row.category_name.trim() : '',
+  }))
+  if (normalized.some(row => !row.game_id || !row.game_name || !row.category_name || row.game_id.length > 120 || row.game_name.length > 120)) {
+    return { success: false as const, error: 'มีข้อมูลว่างหรือยาวเกินกำหนด กรุณาตรวจสอบแต่ละบรรทัด' }
+  }
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { success: false as const, error: 'เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่' }
+  const { data: categories, error: categoryError } = await supabase.from('categories').select('id,name')
+  if (categoryError) return { success: false as const, error: 'ตรวจสอบหมวดหมู่ไม่สำเร็จ: ' + categoryError.message }
+  const categoryMap = new Map<string, string>()
+  for (const category of categories || []) {
+    if (categoryMap.has(category.name)) return { success: false as const, error: 'พบชื่อหมวดหมู่ซ้ำในระบบ: ' + category.name }
+    categoryMap.set(category.name, category.id)
+  }
+  const unknown = [...new Set(normalized.filter(row => !categoryMap.has(row.category_name)).map(row => row.category_name))]
+  if (unknown.length) return { success: false as const, error: 'ไม่พบหมวดหมู่: ' + unknown.join(', ') }
+  const seen = new Set<string>()
+  const uniqueRows = normalized.filter(row => {
+    if (seen.has(row.game_id)) return false
+    seen.add(row.game_id)
+    return true
+  })
+  const duplicateInFile = normalized.length - uniqueRows.length
+  const { data: existing, error: lookupError } = await supabase.from('game_accounts').select('game_id').in('game_id', uniqueRows.map(row => row.game_id))
+  if (lookupError) return { success: false as const, error: 'ตรวจสอบไอดีซ้ำไม่สำเร็จ: ' + lookupError.message }
+  const existingIds = new Set((existing || []).map(row => row.game_id))
+  const toInsert = uniqueRows.filter(row => !existingIds.has(row.game_id))
+  const skippedExisting = uniqueRows.length - toInsert.length
+  if (toInsert.length) {
+    const payload = toInsert.map(row => ({
+      game_id: row.game_id,
+      game_name: row.game_name,
+      category_id: categoryMap.get(row.category_name)!,
+      notes: '',
+      image_path: null,
+      user_id: user.id,
+    }))
+    const { data: created, error: insertError } = await supabase.from('game_accounts').insert(payload).select('id,game_id,game_name,category_id')
+    if (insertError) return { success: false as const, error: 'บันทึกไม่สำเร็จ: ' + insertError.message }
+    for (const account of created || []) {
+      const input = { game_id: account.game_id, game_name: account.game_name, category_id: account.category_id, notes: '' }
+      await applyAutoTags(supabase, user.id, account.id, input)
+      await recordAutomationEvent(supabase, user.id, 'account.created', account.id, input)
+    }
+  }
+  revalidatePath('/')
+  return { success: true as const, inserted: toInsert.length, skippedExisting, skippedInFile: duplicateInFile }
+}
