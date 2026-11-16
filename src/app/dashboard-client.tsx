@@ -5,13 +5,13 @@ import { useRouter } from 'next/navigation'
 import { createGameAccount, deleteGameAccount, updateGameAccount } from '@/app/actions/accounts'
 
 export type Category = { id: string; name: string; description: string | null; cover_image_path: string | null }
-export type Account = { id: string; category_id: string; game_name: string; game_id: string; notes: string | null; image_path: string | null; created_at: string }
+export type Account = { id: string; category_id: string; status: 'played' | 'not_played'; game_name: string; game_id: string; notes: string | null; image_path: string | null; created_at: string }
 
 type Props = { categories: Category[]; accounts: Account[]; dataError: string | null }
-type FormValues = { game_id: string; game_name: string; category_id: string; notes: string }
+type FormValues = { game_id: string; game_name: string; category_id: string; status: 'played' | 'not_played'; notes: string }
 
 const mainCategories = ['กรอบ 6', 'กรอบ 7', 'กรอบแอส']
-const emptyForm: FormValues = { game_id: '', game_name: '', category_id: '', notes: '' }
+const emptyForm: FormValues = { game_id: '', game_name: '', category_id: '', status: 'not_played', notes: '' }
 
 function parseAccountNotes(notes: string | null) {
   if (!notes) return { details: '', ownedSkins: [] as string[] }
@@ -51,12 +51,12 @@ export default function DashboardClient({ categories, accounts, dataError }: Pro
   const [isPending, startTransition] = useTransition()
 
   const categoryById = useMemo(() => new Map(categories.map((category) => [category.id, category.name])), [categories])
-  const playedCount = accounts.filter((account) => categoryById.get(account.category_id) === 'ไอดีเล่นแล้ว').length
+  const playedCount = accounts.filter((account) => account.status === 'played').length
   const notPlayedCount = accounts.length - playedCount
 
   const filteredAccounts = useMemo(() => accounts.filter((account) => {
     const categoryName = categoryById.get(account.category_id) || ''
-    const isPlayed = categoryName === 'ไอดีเล่นแล้ว'
+    const isPlayed = account.status === 'played'
     const matchesCategory = categoryFilter === 'ทั้งหมด' || categoryName === categoryFilter
     const matchesStatus = statusFilter === 'ทั้งหมด' || (statusFilter === 'เล่นแล้ว' && isPlayed) || (statusFilter === 'ยังไม่เล่น' && !isPlayed)
     const term = search.trim().toLocaleLowerCase()
@@ -73,7 +73,7 @@ export default function DashboardClient({ categories, accounts, dataError }: Pro
 
   function openEditForm(account: Account) {
     setEditingAccount(account)
-    setFormValues({ game_id: account.game_id, game_name: account.game_name, category_id: account.category_id, notes: account.notes || '' })
+    setFormValues({ game_id: account.game_id, game_name: account.game_name, category_id: account.category_id, status: account.status, notes: account.notes || '' })
     setFormError('')
     setFormOpen(true)
   }
@@ -194,7 +194,7 @@ export default function DashboardClient({ categories, accounts, dataError }: Pro
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
             {filteredAccounts.map((account) => {
               const categoryName = categoryById.get(account.category_id) || 'อื่น ๆ'
-              const played = categoryName === 'ไอดีเล่นแล้ว'
+              const played = account.status === 'played'
               const hasAssassinFrame = categoryName === 'กรอบแอส'
               return (
                 <article key={account.id} className="account-card">
@@ -290,6 +290,12 @@ export default function DashboardClient({ categories, accounts, dataError }: Pro
                 <select required value={formValues.category_id} onChange={(event) => setFormValues((current) => ({ ...current, category_id: event.target.value }))}>
                   <option value="" disabled>เลือกหมวดหมู่</option>
                   {categories.map((category) => <option key={category.id} value={category.id}>{category.name === 'ไก่ปอง 810' ? '🎟️ ไก่ปอง 810' : category.name}</option>)}
+                </select>
+              </FormField>
+              <FormField label="สถานะการใช้งาน" required>
+                <select required value={formValues.status} onChange={(event) => setFormValues((current) => ({ ...current, status: event.target.value as FormValues['status'] }))}>
+                  <option value="not_played">ยังไม่เล่น</option>
+                  <option value="played">เล่นแล้ว</option>
                 </select>
               </FormField>
               <FormField label="หมายเหตุ">

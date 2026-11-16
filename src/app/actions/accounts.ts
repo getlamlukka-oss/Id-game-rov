@@ -7,6 +7,7 @@ type AccountInput = {
   game_id: string
   game_name: string
   category_id: string
+  status: 'played' | 'not_played'
   notes: string
 }
 
@@ -20,13 +21,13 @@ function validateInput(input: AccountInput): ValidationResult {
   const category_id = input.category_id?.trim()
   const notes = input.notes?.trim() || ''
 
-  if (!game_id || !game_name || !category_id) {
+  if (!game_id || !game_name || !category_id || !['played', 'not_played'].includes(input.status)) {
     return { valid: false, error: 'กรุณากรอกรหัสไอดี ชื่อตัวละคร และเลือกหมวดหมู่ให้ครบ' }
   }
   if (game_id.length > 120 || game_name.length > 120 || notes.length > 2000) {
     return { valid: false, error: 'ข้อมูลยาวเกินกำหนด กรุณาตรวจสอบอีกครั้ง' }
   }
-  return { valid: true, value: { game_id, game_name, category_id, notes } }
+  return { valid: true, value: { game_id, game_name, category_id, status: input.status, notes } }
 }
 
 export async function createGameAccount(input: AccountInput) {

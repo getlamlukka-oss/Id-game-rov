@@ -14,7 +14,7 @@ export default async function Home() {
 
   const [{ data: categories, error: categoriesError }, { data: accounts, error: accountsError }] = await Promise.all([
     supabase.from('categories').select('id,name,description,cover_image_path').order('name'),
-    supabase.from('game_accounts').select('id,category_id,game_name,game_id,notes,image_path,created_at').order('created_at', { ascending: false }),
+    supabase.from('game_accounts').select('id,category_id,status,game_name,game_id,notes,image_path,created_at').order('created_at', { ascending: false }),
   ])
 
   return (
