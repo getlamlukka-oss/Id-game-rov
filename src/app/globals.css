@@ -332,3 +332,104 @@ body {
   .dashboard-summary > div { padding: 10px 8px; }
   .dashboard-summary strong { font-size: 19px; }
 }
+
+
+/* Site-wide finishing pass */
+:root {
+  --surface: #fffdf8;
+  --line: rgb(43 44 35 / 9%);
+  --shadow-soft: 0 12px 34px rgb(43 44 35 / 6%);
+}
+::selection { background: #e3e9c9; color: #292a23; }
+html { scroll-behavior: smooth; }
+body { color: #292a23; -webkit-font-smoothing: antialiased; }
+main { min-width: 0; }
+.site-header { min-height: 58px; }
+.site-header a, .site-header button { transition: color .18s ease, background .18s ease, border-color .18s ease; }
+.dashboard-intro { position: relative; overflow: hidden; }
+.dashboard-intro::after {
+  position: absolute; right: -46px; top: -78px; width: 210px; height: 210px;
+  border: 1px solid rgb(102 115 61 / 10%); border-radius: 50%;
+  box-shadow: 0 0 0 24px rgb(102 115 61 / 3%), 0 0 0 48px rgb(102 115 61 / 2%);
+  content: ''; pointer-events: none;
+}
+.dashboard-intro > * { position: relative; z-index: 1; }
+.library-toolbar { position: relative; }
+.account-card {
+  position: relative; overflow: hidden;
+  border-color: rgb(43 44 35 / 8%); border-radius: 16px;
+  background: linear-gradient(145deg, #fffefa, #fffdf8);
+  box-shadow: 0 5px 18px rgb(43 44 35 / 4%);
+}
+.account-card::before {
+  position: absolute; inset: 0 auto 0 0; width: 3px;
+  background: linear-gradient(180deg, #dce8a5, #e9b3a3);
+  content: ''; opacity: .85;
+}
+.account-card:hover { border-color: rgb(102 115 61 / 22%); box-shadow: 0 12px 26px rgb(43 44 35 / 8%); }
+.compact-avatar { border: 1px solid rgb(43 44 35 / 7%); }
+.account-title-line h3 { letter-spacing: -.035em; }
+.account-actions { align-self: center; }
+.button-card-edit, .button-card-delete { min-width: 48px; transition: background .18s ease, border-color .18s ease, transform .18s ease; }
+.button-card-edit:hover, .button-card-delete:hover { transform: translateY(-1px); }
+.button-primary { transition: transform .18s ease, box-shadow .18s ease, background .18s ease; }
+.button-primary:active, .button-card-edit:active, .button-card-delete:active { transform: translateY(1px); }
+.modal-backdrop { padding: 16px; }
+.account-modal { border-radius: 22px; }
+.form-field { gap: 8px; }
+.form-field input:focus, .form-field select:focus, .form-field textarea:focus {
+  outline: 0; border-color: #87945d; box-shadow: 0 0 0 3px rgb(135 148 93 / 13%);
+}
+.automation-hero { border-color: rgb(43 44 35 / 8%); }
+.automation-card { border-color: var(--line); border-radius: 18px; box-shadow: var(--shadow-soft); }
+.workflow-item, .event-item { border-color: var(--line); background: #fffefa; }
+footer { color: #929183; letter-spacing: .12em; }
+.login-page {
+  position: relative; isolation: isolate; overflow: hidden;
+  background: radial-gradient(ellipse at 12% 12%, rgb(220 232 165 / 42%), transparent 32rem),
+    radial-gradient(ellipse at 92% 88%, rgb(233 179 163 / 28%), transparent 30rem), #f3f0e7;
+  color: #292a23;
+}
+.login-page::before, .login-page::after {
+  position: absolute; z-index: -1; width: 340px; height: 340px; border: 1px solid rgb(102 115 61 / 12%);
+  border-radius: 50%; content: '';
+}
+.login-page::before { top: -190px; right: -100px; box-shadow: 0 0 0 24px rgb(102 115 61 / 3%), 0 0 0 48px rgb(102 115 61 / 2%); }
+.login-page::after { bottom: -230px; left: -150px; }
+.login-card {
+  width: 100%; max-width: 420px; padding: 34px;
+  border: 1px solid rgb(43 44 35 / 9%); border-radius: 24px;
+  background: rgb(255 253 248 / 92%); box-shadow: 0 24px 70px rgb(43 44 35 / 10%);
+  backdrop-filter: blur(12px);
+}
+.login-mark {
+  display: grid; width: 52px; height: 52px; margin: 0 auto 22px; place-items: center;
+  border-radius: 15px; background: #292a23; color: #f3f0e7;
+  font-family: Georgia, serif; font-size: 28px;
+}
+.login-card h1 { color: #292a23; font-family: Georgia, "Times New Roman", serif; font-size: 29px; font-weight: 500; letter-spacing: -.055em; }
+.login-card .login-subtitle { margin-top: 8px; color: #858477; font-size: 13px; line-height: 1.6; }
+.login-field { display: grid; gap: 7px; color: #55564c; font-size: 12px; font-weight: 700; }
+.login-field input {
+  width: 100%; min-height: 48px; border: 1px solid rgb(43 44 35 / 12%);
+  border-radius: 11px; padding: 0 14px; background: #fffefa; color: #292a23; font-size: 14px;
+}
+.login-field input::placeholder { color: #aaa99e; }
+.login-field input:focus { outline: 0; border-color: #87945d; box-shadow: 0 0 0 3px rgb(135 148 93 / 13%); }
+.login-submit {
+  min-height: 48px; border: 0; border-radius: 11px; background: #34372b; color: #fffdf8;
+  font-size: 13px; font-weight: 700; transition: background .18s ease, transform .18s ease;
+}
+.login-submit:hover { background: #4b5139; transform: translateY(-1px); }
+.login-error { border: 1px solid #e7c7bc; border-radius: 11px; padding: 11px 13px; background: #fbefea; color: #945d4d; font-size: 12px; }
+@media (max-width: 480px) {
+  .login-card { padding: 27px 22px; border-radius: 20px; }
+  .dashboard-intro { border-radius: 18px; }
+  .accounts-heading-row { align-items: flex-start; }
+  .accounts-heading-row > div { flex-wrap: wrap; justify-content: flex-end; }
+  .account-card { align-items: stretch; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .login-submit, .button-primary, .button-card-edit, .button-card-delete { transition: none; }
+}
