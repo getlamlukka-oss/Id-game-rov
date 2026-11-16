@@ -463,3 +463,78 @@ footer { color: #929183; letter-spacing: .12em; }
 .compact-avatar > img:not(.category-avatar-frame) { position: absolute; inset: 5px; z-index: 0; width: calc(100% - 10px); height: calc(100% - 10px); border-radius: 8px; object-fit: cover; }
 .compact-avatar.has-category-frame > span { position: relative; z-index: 0; }
 .compact-avatar .category-avatar-frame { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
+
+
+/* Editorial account cards — mobile-first */
+.account-list { gap: 12px; }
+.account-card-editorial {
+  display: grid; grid-template-columns: minmax(0,1fr); align-items: stretch;
+  gap: 13px; padding: 15px; border: 1px solid #e8e5da; border-radius: 18px;
+  background: #fffefa; box-shadow: 0 5px 18px rgb(43 44 35 / 4%);
+}
+.account-card-editorial::before { width: 2px; background: #cbd3ad; }
+.account-card-editorial .account-card-main { display: flex; min-width: 0; align-items: flex-start; gap: 14px; }
+.account-card-editorial .account-copy { min-width: 0; flex: 1; padding-top: 2px; }
+.account-card-editorial .compact-avatar {
+  width: 68px; height: 68px; flex: 0 0 68px; border: 0; border-radius: 15px;
+  background: #f0efe8;
+}
+.account-card-editorial .compact-avatar:not(.has-category-frame) { border: 1px solid #e6e3d9; }
+.account-card-editorial .compact-avatar > img:not(.category-avatar-frame) {
+  inset: 7px; width: calc(100% - 14px); height: calc(100% - 14px); border-radius: 10px;
+}
+.account-card-editorial .compact-avatar.has-category-frame > img:not(.category-avatar-frame) {
+  inset: 9px; width: calc(100% - 18px); height: calc(100% - 18px); border-radius: 9px;
+}
+.account-card-editorial .compact-avatar > span { color: #77796a; font-size: 22px; font-weight: 600; }
+.account-card-editorial .account-title-line { align-items: flex-start; justify-content: space-between; gap: 8px; }
+.account-card-editorial .account-title-line h3 {
+  overflow-wrap: anywhere; color: #292a23; font-size: 17px; font-weight: 750;
+  letter-spacing: -.035em; line-height: 1.35;
+}
+.account-card-editorial .account-status {
+  flex: 0 0 auto; margin-top: 1px; border-radius: 999px; padding: 5px 9px;
+  background: #eef1e3; color: #59633d; font-size: 10px; line-height: 1.2;
+}
+.account-card-editorial .account-status.played { background: #f5ece7; color: #946b5d; }
+.account-id-line {
+  display: flex; align-items: center; gap: 7px; margin-top: 5px;
+  color: #888779; font-size: 12px; font-weight: 600; letter-spacing: .015em;
+}
+.account-id-line > span:first-child {
+  color: #6b7350; font-size: 9px; font-weight: 800; letter-spacing: .14em;
+}
+.account-id-divider { color: #c5c2b6; }
+.account-card-editorial .account-notes {
+  margin-top: 9px; color: #55564c; font-size: 12px; line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+.account-card-editorial .account-meta {
+  display: inline-flex; align-items: center; margin-top: 9px; border: 1px solid #eceade;
+  border-radius: 8px; padding: 4px 8px; background: #faf9f3; color: #666753;
+  font-size: 10px; line-height: 1.3;
+}
+.account-card-editorial .account-meta img { width: 18px; height: 18px; }
+.account-card-editorial .account-actions {
+  display: flex; align-items: center; justify-content: flex-end; gap: 7px;
+  padding-top: 10px; border-top: 1px solid #efede5;
+}
+.account-card-editorial .button-card-copy,
+.account-card-editorial .button-card-edit,
+.account-card-editorial .button-card-delete {
+  min-height: 36px; border-radius: 9px; padding: 7px 11px; font-size: 11px;
+}
+.account-card-editorial .button-card-copy { margin-right: auto; border-color: #dfe4cf; background: #f0f2e7; color: #58613d; }
+.account-card-editorial .button-card-edit { border-color: #e8e6dc; background: #fffefa; color: #55564c; }
+.account-card-editorial .button-card-delete { border-color: #f0e3dc; background: #fbf4f0; color: #936c5e; }
+.account-card-editorial .owned-skins { margin-top: 8px; font-size: 11px; line-height: 1.65; }
+@media (min-width: 640px) {
+  .account-card-editorial { gap: 12px; padding: 17px; }
+  .account-card-editorial .account-card-main { gap: 15px; }
+}
+@media (max-width: 380px) {
+  .account-card-editorial { padding: 12px; }
+  .account-card-editorial .compact-avatar { width: 60px; height: 60px; flex-basis: 60px; }
+  .account-card-editorial .account-title-line h3 { font-size: 15px; }
+  .account-card-editorial .account-status { padding: 4px 7px; font-size: 9px; }
+}
