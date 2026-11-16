@@ -455,3 +455,11 @@ footer { color: #929183; letter-spacing: .12em; }
   .account-actions { flex-direction: row; align-items: center; justify-content: flex-end; }
   .button-card-copy, .button-card-edit, .button-card-delete { min-height: 34px; }
 }
+
+
+/* Category-specific profile frames */
+.compact-avatar { position: relative; overflow: visible; isolation: isolate; }
+.compact-avatar.has-category-frame { border: 0; background: transparent; }
+.compact-avatar > img:not(.category-avatar-frame) { position: absolute; inset: 5px; z-index: 0; width: calc(100% - 10px); height: calc(100% - 10px); border-radius: 8px; object-fit: cover; }
+.compact-avatar.has-category-frame > span { position: relative; z-index: 0; }
+.compact-avatar .category-avatar-frame { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
