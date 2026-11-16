@@ -3,8 +3,8 @@ import { useMemo, useState, useTransition, type FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import { createGameAccount, deleteGameAccount, updateGameAccount } from '@/app/actions/accounts'
 
-type Category={id:string;name:string;description:string|null;cover_image_path:string|null}
-type Account={id:string;category_id:string;game_name:string;game_id:string;notes:string|null;image_path:string|null;created_at:string}
+export type Category={id:string;name:string;description:string|null;cover_image_path:string|null}
+export type Account={id:string;category_id:string;game_name:string;game_id:string;notes:string|null;image_path:string|null;created_at:string}
 type Values={game_id:string;game_name:string;category_id:string;notes:string}
 const mainCategories=['กรอบ 6','กรอบ 7','กรอบแอส']
 const frames:Record<string,string>={'กรอบ 6':'/account-frames/frame-krob7.webp','กรอบ 7':'/account-frames/frame-krob6.webp','กรอบแอส':'/account-frames/frame-krob-as-gold-detail-v2.webp','บัต Evo':'/category-art/but-evo.webp'}
