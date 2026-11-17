@@ -538,3 +538,65 @@ footer { color: #929183; letter-spacing: .12em; }
   .account-card-editorial .account-title-line h3 { font-size: 15px; }
   .account-card-editorial .account-status { padding: 4px 7px; font-size: 9px; }
 }
+
+
+/* Ponytail ULTRA — accessible editorial finish */
+:root {
+  --ivory: #f3f0e7;
+  --cream: #fffdf8;
+  --ink: #292a23;
+  --muted: #6f7065;
+  --accent: #59643b;
+  --lime: #dce8a5;
+}
+body {
+  background: #f3f0e7;
+  color: #292a23;
+  font-family: Arial, "Noto Sans Thai", sans-serif;
+  line-height: 1.65;
+}
+.brand-mark {
+  width: 36px; height: 36px; border: 1px solid #d8d6ca;
+  border-radius: 50%; background: #e9edda; box-shadow: none;
+}
+.brand-mark-dot {
+  width: 9px; height: 9px; border-radius: 50%; background: #59643b;
+}
+.site-header { gap: 12px; }
+.site-header .button-quiet { min-height: 40px; }
+.library-toolbar { min-width: 0; }
+.filter-chip, .status-chip { min-height: 40px; }
+.button-primary, .button-quiet { min-height: 40px; }
+.account-card-editorial .button-card-copy,
+.account-card-editorial .button-card-edit,
+.account-card-editorial .button-card-delete { min-height: 40px; }
+.account-card-editorial .account-title-line h3 { font-size: 17px; line-height: 1.5; }
+.account-card-editorial .account-id-line { font-size: 13px; line-height: 1.6; }
+.account-card-editorial .account-status { font-size: 11px; }
+.state-panel {
+  display: grid; place-content: center; justify-items: center;
+  min-height: 132px; padding: 22px; text-align: center;
+  border: 1px dashed #cbc9bb; border-radius: 16px; background: #fffdf8;
+  line-height: 1.7;
+}
+.image-preview {
+  display: flex; align-items: center; gap: 12px; margin-top: 10px;
+  color: #59643b; font-size: 12px; font-weight: 600;
+}
+.image-preview img {
+  width: 76px; height: 76px; flex: 0 0 76px; border-radius: 12px;
+  border: 1px solid #e4e1d5; background: #f0efe8; object-fit: cover;
+}
+button:disabled { cursor: not-allowed; opacity: .55; }
+@media (max-width: 480px) {
+  .site-header { flex-wrap: wrap; }
+  .site-header > div { gap: 6px; }
+  .site-header .button-quiet { padding-inline: 10px; font-size: 11px; }
+  .account-card-editorial .account-actions { gap: 6px; }
+  .account-card-editorial .button-card-copy,
+  .account-card-editorial .button-card-edit,
+  .account-card-editorial .button-card-delete { padding-inline: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
