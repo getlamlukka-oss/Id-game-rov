@@ -8,6 +8,7 @@ type AccountInput = {
   game_name: string
   category_id: string
   notes: string
+  status: 'played' | 'not_played'
 }
 
 type ValidationResult =
@@ -20,13 +21,13 @@ function validateInput(input: AccountInput): ValidationResult {
   const category_id = input.category_id?.trim()
   const notes = input.notes?.trim() || ''
 
-  if (!game_id || !game_name || !category_id) {
+  if (!game_id || !game_name || !category_id || !['played', 'not_played'].includes(input.status)) {
     return { valid: false, error: 'กรุณากรอกรหัสไอดี ชื่อตัวละคร และเลือกหมวดหมู่ให้ครบ' }
   }
   if (game_id.length > 120 || game_name.length > 120 || notes.length > 2000) {
     return { valid: false, error: 'ข้อมูลยาวเกินกำหนด กรุณาตรวจสอบอีกครั้ง' }
   }
-  return { valid: true, value: { game_id, game_name, category_id, notes } }
+  return { valid: true, value: { game_id, game_name, category_id, notes, status: input.status } }
 }
 
 export async function createGameAccount(input: AccountInput) {
@@ -162,7 +163,7 @@ export async function bulkCreateGameAccounts(rows: { game_id: string; game_name:
     const { data: created, error: insertError } = await supabase.from('game_accounts').insert(payload).select('id,game_id,game_name,category_id')
     if (insertError) return { success: false as const, error: 'บันทึกไม่สำเร็จ: ' + insertError.message }
     for (const account of created || []) {
-      const input = { game_id: account.game_id, game_name: account.game_name, category_id: account.category_id, notes: '' }
+      const input = { game_id: account.game_id, game_name: account.game_name, category_id: account.category_id, notes: '', status: 'not_played' as const }
       await applyAutoTags(supabase, user.id, account.id, input)
       await recordAutomationEvent(supabase, user.id, 'account.created', account.id, input)
     }
