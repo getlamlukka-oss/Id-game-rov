@@ -12,7 +12,7 @@ export default async function Home() {
   if (!user) redirect('/login')
   const [{ data: categories, error: categoriesError }, { data: accounts, error: accountsError }] = await Promise.all([
     supabase.from('categories').select('id,name,description,cover_image_path').order('name'),
-    supabase.from('game_accounts').select('id,category_id,game_name,game_id,notes,image_path,created_at').order('created_at', { ascending: false }),
+    supabase.from('game_accounts').select('id,category_id,game_name,game_id,notes,image_path,created_at,status').order('created_at', { ascending: false }),
   ])
   const accountsWithImages = await Promise.all((accounts || []).map(async account => {
     if (!account.image_path || account.image_path.startsWith('http')) return account
