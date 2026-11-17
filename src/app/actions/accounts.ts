@@ -16,18 +16,23 @@ type ValidationResult =
   | { valid: false; error: string }
 
 function validateInput(input: AccountInput): ValidationResult {
-  const game_id = input.game_id?.trim()
-  const game_name = input.game_name?.trim()
-  const category_id = input.category_id?.trim()
-  const notes = input.notes?.trim() || ''
+  if (!input || typeof input !== 'object' || Array.isArray(input)) {
+    return { valid: false, error: 'รูปแบบข้อมูลไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง' }
+  }
 
-  if (!game_id || !game_name || !category_id || !['played', 'not_played'].includes(input.status)) {
+  const game_id = typeof input.game_id === 'string' ? input.game_id.trim() : ''
+  const game_name = typeof input.game_name === 'string' ? input.game_name.trim() : ''
+  const category_id = typeof input.category_id === 'string' ? input.category_id.trim() : ''
+  const notes = typeof input.notes === 'string' ? input.notes.trim() : ''
+  const status = input.status
+
+  if (!game_id || !game_name || !category_id || !['played', 'not_played'].includes(status)) {
     return { valid: false, error: 'กรุณากรอกรหัสไอดี ชื่อตัวละคร และเลือกหมวดหมู่ให้ครบ' }
   }
   if (game_id.length > 120 || game_name.length > 120 || notes.length > 2000) {
     return { valid: false, error: 'ข้อมูลยาวเกินกำหนด กรุณาตรวจสอบอีกครั้ง' }
   }
-  return { valid: true, value: { game_id, game_name, category_id, notes, status: input.status } }
+  return { valid: true, value: { game_id, game_name, category_id, notes, status } }
 }
 
 export async function createGameAccount(input: AccountInput) {
@@ -119,6 +124,9 @@ async function applyAutoTags(supabase: Awaited<ReturnType<typeof createClient>>,
 export async function bulkCreateGameAccounts(rows: { game_id: string; game_name: string; category_name: string }[]) {
   if (!Array.isArray(rows) || rows.length === 0) return { success: false as const, error: 'ไม่พบรายการสำหรับนำเข้า' }
   if (rows.length > 100) return { success: false as const, error: 'นำเข้าได้ไม่เกิน 100 รายการต่อครั้ง' }
+  if (rows.some(row => !row || typeof row !== 'object' || Array.isArray(row))) {
+    return { success: false as const, error: 'พบรายการที่มีรูปแบบไม่ถูกต้อง กรุณาตรวจสอบไฟล์นำเข้า' }
+  }
   const normalized = rows.map(row => ({
     game_id: typeof row.game_id === 'string' ? row.game_id.trim() : '',
     game_name: typeof row.game_name === 'string' ? row.game_name.trim() : '',
@@ -158,6 +166,7 @@ export async function bulkCreateGameAccounts(rows: { game_id: string; game_name:
       category_id: categoryMap.get(row.category_name)!,
       notes: '',
       image_path: null,
+      status: 'not_played',
       user_id: user.id,
     }))
     const { data: created, error: insertError } = await supabase.from('game_accounts').insert(payload).select('id,game_id,game_name,category_id')
