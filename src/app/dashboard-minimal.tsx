@@ -45,11 +45,13 @@ export default function DashboardMinimal({categories,accounts,totalAccounts,play
   function onKeyDown(event:KeyboardEvent){
    if(event.key==='Escape'){event.preventDefault();if(open&&!pendingRef.current){setOpen(false);setEditing(null);setValues(empty);setImageFile(null);setImagePreview(null);setError('')}else if(!pendingRef.current)setImportOpen(false);return}
    if(event.key!=='Tab')return
+   const activeModal=modalRef.current
+   if(!activeModal)return
    const items=getFocusable()
-   if(items.length===0){event.preventDefault();modal.focus();return}
+   if(items.length===0){event.preventDefault();activeModal.focus();return}
    const first=items[0],last=items[items.length-1]
-   if(event.shiftKey&&(document.activeElement===first||!modal.contains(document.activeElement))){event.preventDefault();last.focus()}
-   else if(!event.shiftKey&&(document.activeElement===last||!modal.contains(document.activeElement))){event.preventDefault();first.focus()}
+   if(event.shiftKey&&(document.activeElement===first||!activeModal.contains(document.activeElement))){event.preventDefault();last.focus()}
+   else if(!event.shiftKey&&(document.activeElement===last||!activeModal.contains(document.activeElement))){event.preventDefault();first.focus()}
   }
   document.addEventListener('keydown',onKeyDown)
   return()=>{document.removeEventListener('keydown',onKeyDown);previousFocus?.focus()}
