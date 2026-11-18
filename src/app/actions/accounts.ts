@@ -250,11 +250,15 @@ export async function getGameAccountsPage(offset: number) {
 
   if (error) return { success: false as const, error: 'โหลดบัญชีเพิ่มเติมไม่สำเร็จ: ' + error.message }
 
-  const accountsWithImages = await Promise.all((data || []).map(async account => {
+  const imagePaths = (data || []).flatMap(account => account.image_path && !account.image_path.startsWith('http') ? [account.image_path] : [])
+  const { data: signedImages } = imagePaths.length
+    ? await supabase.storage.from('game-images').createSignedUrls(imagePaths, 60 * 60)
+    : { data: [] }
+  const signedImageMap = new Map((signedImages || []).map(image => [image.path, image.signedUrl]))
+  const accountsWithImages = (data || []).map(account => {
     if (!account.image_path || account.image_path.startsWith('http')) return account
-    const { data: signed } = await supabase.storage.from('game-images').createSignedUrl(account.image_path, 60 * 60)
-    return { ...account, image_path: signed?.signedUrl || null }
-  }))
+    return { ...account, image_path: signedImageMap.get(account.image_path) || null }
+  })
 
   return { success: true as const, accounts: accountsWithImages, hasMore: (data || []).length === ACCOUNT_PAGE_SIZE }
 }
