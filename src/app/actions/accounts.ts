@@ -231,3 +231,30 @@ export async function uploadGameAccountImage(accountId: string, formData: FormDa
   revalidatePath('/')
   return { success: true as const }
 }
+
+
+const ACCOUNT_PAGE_SIZE = 40
+
+export async function getGameAccountsPage(offset: number) {
+  const safeOffset = Number.isInteger(offset) && offset >= 0 ? offset : 0
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { success: false as const, error: 'เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่' }
+
+  const { data, error } = await supabase
+    .from('game_accounts')
+    .select('id,category_id,game_name,game_id,notes,image_path,created_at,status')
+    .order('created_at', { ascending: false })
+    .order('id', { ascending: false })
+    .range(safeOffset, safeOffset + ACCOUNT_PAGE_SIZE - 1)
+
+  if (error) return { success: false as const, error: 'โหลดบัญชีเพิ่มเติมไม่สำเร็จ: ' + error.message }
+
+  const accountsWithImages = await Promise.all((data || []).map(async account => {
+    if (!account.image_path || account.image_path.startsWith('http')) return account
+    const { data: signed } = await supabase.storage.from('game-images').createSignedUrl(account.image_path, 60 * 60)
+    return { ...account, image_path: signed?.signedUrl || null }
+  }))
+
+  return { success: true as const, accounts: accountsWithImages, hasMore: (data || []).length === ACCOUNT_PAGE_SIZE }
+}
