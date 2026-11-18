@@ -600,3 +600,25 @@ button:disabled { cursor: not-allowed; opacity: .55; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+
+/* Accessibility fixes — Phase 1 */
+.dashboard-intro .eyebrow { color: #62634f; }
+.dashboard-intro-copy { color: #626257; }
+.dashboard-summary span { color: #55564c; }
+.account-id-line { color: #626257; }
+.account-card-editorial .account-status.played { color: #784838; }
+.account-card-editorial .button-card-delete { color: #784838; }
+footer { color: #626257; }
+.modal-close {
+  display: inline-grid;
+  width: 44px;
+  min-width: 44px;
+  height: 44px;
+  min-height: 44px;
+  place-items: center;
+  font-size: 22px;
+}
+.account-modal:focus { outline: none; }
+@media (prefers-reduced-motion: reduce) {
+  .account-modal, .modal-backdrop { scroll-behavior: auto; }
+}
