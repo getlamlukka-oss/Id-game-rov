@@ -28,6 +28,8 @@ export default function DashboardMinimal({categories,accounts,dataError}:{catego
  const [imageFile,setImageFile]=useState<File|null>(null)
  const [imagePreview,setImagePreview]=useState<string|null>(null)
  const modalRef=useRef<HTMLElement|null>(null)
+ const pendingRef=useRef(pending)
+ pendingRef.current=pending
  useEffect(()=>{
   if(!open&&!importOpen)return
   const previousFocus=document.activeElement instanceof HTMLElement?document.activeElement:null
@@ -36,7 +38,7 @@ export default function DashboardMinimal({categories,accounts,dataError}:{catego
   const getFocusable=()=>Array.from(modal.querySelectorAll<HTMLElement>('a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])')).filter(el=>el.getAttribute('aria-hidden')!=='true')
   getFocusable()[0]?.focus()
   function onKeyDown(event:KeyboardEvent){
-   if(event.key==='Escape'){event.preventDefault();if(open)close();else if(!pending)setImportOpen(false);return}
+   if(event.key==='Escape'){event.preventDefault();if(open&&!pendingRef.current){setOpen(false);setEditing(null);setValues(empty);setImageFile(null);setImagePreview(null);setError('')}else if(!pendingRef.current)setImportOpen(false);return}
    if(event.key!=='Tab')return
    const items=getFocusable()
    if(items.length===0){event.preventDefault();modal.focus();return}
@@ -46,7 +48,7 @@ export default function DashboardMinimal({categories,accounts,dataError}:{catego
   }
   document.addEventListener('keydown',onKeyDown)
   return()=>{document.removeEventListener('keydown',onKeyDown);previousFocus?.focus()}
- },[open,importOpen,pending])
+ },[open,importOpen])
 
  const [copiedId,setCopiedId]=useState('')
  const [pending,startTransition]=useTransition()
