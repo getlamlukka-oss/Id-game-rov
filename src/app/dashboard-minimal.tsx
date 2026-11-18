@@ -34,7 +34,7 @@ export default function DashboardMinimal({categories,accounts,totalAccounts,play
  const [pending,startTransition]=useTransition()
  const modalRef=useRef<HTMLElement|null>(null)
  const pendingRef=useRef(pending)
- pendingRef.current=pending
+ useEffect(()=>{pendingRef.current=pending},[pending])
  useEffect(()=>{
   if(!open&&!importOpen)return
   const previousFocus=document.activeElement instanceof HTMLElement?document.activeElement:null
@@ -57,6 +57,8 @@ export default function DashboardMinimal({categories,accounts,totalAccounts,play
   return()=>{document.removeEventListener('keydown',onKeyDown);previousFocus?.focus()}
  },[open,importOpen])
 
+ // Server props can change after router.refresh; reset the loaded client pages to the fresh first page.
+ // eslint-disable-next-line react-hooks/set-state-in-effect
  useEffect(()=>{setAllAccounts(accounts);setHasMore(initialHasMore)},[accounts,initialHasMore])
  const [copiedId,setCopiedId]=useState('')
  const names=useMemo(()=>new Map(categories.map(c=>[c.id,c.name])),[categories])
