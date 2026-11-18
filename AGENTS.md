@@ -18,3 +18,5 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Before UI edits, inspect the target component, its dependencies, existing design tokens, and the rendered page. Verify the result at mobile and desktop sizes; do not claim visual verification if the page was not rendered and inspected.
 - Run the relevant lint/build checks after code changes and report any checks that could not be run.
 - When using Impeccable, prefer `critique`, `audit`, `polish`, `adapt`, and `distill` as appropriate. Do not run broad redesign commands or replace the established design direction without explicit approval.
+
+- For frontend/UI work, read `.agents/skills/impeccable/SKILL.md` first and follow its manual workflow. This project copy does not include the Impeccable CLI, native engine, or automatic hooks; do not claim those tools were run.
