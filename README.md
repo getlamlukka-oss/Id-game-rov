@@ -15,6 +15,61 @@
 
 > หมายเหตุ: ความสามารถ Automation บางส่วนต้องติดตั้ง migration ก่อน ส่วนการส่งรายงานตามเวลา/การส่ง Discord อัตโนมัติจะทำงานได้ก็ต่อเมื่อมีระบบ scheduler หรือ worker ที่เชื่อมต่อการตั้งค่าไว้ด้วย
 
+
+## ตรวจและปรับปรุง UI/UX ด้วย Impeccable
+
+Repository นี้รองรับการใช้ [Impeccable](https://github.com/pbakaus/impeccable) เป็น design skill สำหรับ AI coding agents โดยไม่เพิ่ม runtime dependency ให้เว็บแอป
+
+### ติดตั้งสำหรับเครื่องมือ AI
+
+รันจาก root ของ repository:
+
+```bash
+npx impeccable install
+```
+
+หากต้องการติดตั้งเฉพาะ Codex ใน repository นี้:
+
+```bash
+npx impeccable install --providers=codex --scope=project
+```
+
+เลือกติดตั้ง design hook เมื่อ installer ถาม จากนั้น reload coding agent หากใช้ Codex ให้เปิด `/hooks` และอนุมัติ project hook ก่อนใช้งาน การติดตั้งนี้เป็นขั้นตอนแยกจากการรันเว็บ และไม่ต้องเพิ่ม Impeccable ลงใน `dependencies` หรือ `devDependencies`
+
+### คำสั่งที่แนะนำ
+
+ใน Codex เรียก skill ด้วย `$impeccable`:
+
+```text
+$impeccable init
+$impeccable critique src/app/dashboard-minimal.tsx
+$impeccable audit src/
+$impeccable polish src/app/dashboard-minimal.tsx
+$impeccable adapt src/app/dashboard-minimal.tsx
+```
+
+ตรวจ source code ได้โดยตรง:
+
+```bash
+npx impeccable detect src/
+```
+
+สำหรับกฎที่ต้องตรวจหน้าจอจริง เช่น contrast และขนาดตัวอักษร ให้เปิดเว็บในเครื่องก่อน แล้วสแกน URL:
+
+```bash
+npm run dev
+npx impeccable detect http://localhost:3000
+```
+
+### ข้อกำหนดของโปรเจกต์
+
+- ยึดแนวทาง Editorial Minimal, mobile-first และ avatar-centric ตามข้อกำหนดใน `AGENTS.md`
+- ใช้ Impeccable เพื่อ audit, critique และ polish เป็นหลัก ไม่เปลี่ยน visual direction โดยพลการ
+- งาน UI ต้องไม่เปลี่ยน Auth, Supabase, RLS, Storage, CRUD, automation หรือข้อมูลบัญชีเกม เว้นแต่ได้รับคำสั่งชัดเจน
+- ตรวจผลบนหน้าจอจริงทั้ง mobile และ desktop ก่อนสรุปว่าเสร็จ
+
+ดูคำสั่งและเอกสารฉบับเต็มได้ที่ [Impeccable README](https://github.com/pbakaus/impeccable) และ [Impeccable documentation](https://impeccable.style/docs)
+
 ## Tech Stack
 
 - Next.js 16 (App Router)
