@@ -622,3 +622,46 @@ footer { color: #626257; }
 @media (prefers-reduced-motion: reduce) {
   .account-modal, .modal-backdrop { scroll-behavior: auto; }
 }
+
+
+/* Dashboard Phase 2 — clearer recovery and touch targets */
+.filter-chip,
+.status-chip,
+.search-shell > button,
+.clear-filters,
+.bulk-row-error {
+  line-height: 1.4;
+}
+.filter-chip,
+.status-chip {
+  min-height: 44px;
+}
+.search-shell > button {
+  display: grid;
+  width: 44px;
+  min-width: 44px;
+  height: 44px;
+  place-items: center;
+  border-radius: 9px;
+  font-size: 22px;
+}
+.clear-filters {
+  justify-self: start;
+  min-height: 44px;
+  padding: 9px 12px;
+  border: 1px solid #d8d6ca;
+  border-radius: 10px;
+  background: #fffdf8;
+  color: #4f5638;
+  font-size: 12px;
+  font-weight: 700;
+}
+.clear-filters:hover {
+  border-color: #87945d;
+  background: #f5f6ed;
+}
+.bulk-row-error {
+  margin-top: 3px;
+  color: #8e2e20;
+  font-weight: 700;
+}
