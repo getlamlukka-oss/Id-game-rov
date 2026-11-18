@@ -10,13 +10,19 @@
 }
 
 :root {
-  --ivory: #f5f5f0;
-  --ink: #17191d;
-  --lime: #d9f36a;
-  --coral: #f5a18e;
-  --cream: #fffefa;
-  --muted: #74746d;
-  --accent: #60741e;
+  /* Core palette */
+  --ivory: #f3f0e7;
+  --cream: #fffdf8;
+  --surface: #fffdf8;
+  --ink: #292a23;
+  --muted: #6f7065;
+  --accent: #59643b;
+  --lime: #dce8a5;
+  --coral: #e9b3a3;
+
+  /* Shared component tokens */
+  --line: rgb(43 44 35 / 9%);
+  --shadow-soft: 0 12px 34px rgb(43 44 35 / 6%);
   color-scheme: light;
 }
 
@@ -198,15 +204,7 @@ body { background: #f5f5f2; }
 
 
 /* Refined visual pass: calm, editorial account library */
-:root {
-  --ivory: #f3f0e7;
-  --cream: #fffdf8;
-  --ink: #24251f;
-  --muted: #858477;
-  --accent: #66733d;
-  --lime: #dce8a5;
-  --coral: #e9b3a3;
-}
+
 body {
   background:
     radial-gradient(ellipse at 8% 0%, rgb(220 232 165 / 24%), transparent 34rem),
@@ -335,11 +333,7 @@ body {
 
 
 /* Site-wide finishing pass */
-:root {
-  --surface: #fffdf8;
-  --line: rgb(43 44 35 / 9%);
-  --shadow-soft: 0 12px 34px rgb(43 44 35 / 6%);
-}
+
 ::selection { background: #e3e9c9; color: #292a23; }
 html { scroll-behavior: smooth; }
 body { color: #292a23; -webkit-font-smoothing: antialiased; }
@@ -541,14 +535,7 @@ footer { color: #929183; letter-spacing: .12em; }
 
 
 /* Ponytail ULTRA — accessible editorial finish */
-:root {
-  --ivory: #f3f0e7;
-  --cream: #fffdf8;
-  --ink: #292a23;
-  --muted: #6f7065;
-  --accent: #59643b;
-  --lime: #dce8a5;
-}
+
 body {
   background: #f3f0e7;
   color: #292a23;
