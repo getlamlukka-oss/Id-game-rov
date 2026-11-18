@@ -21,11 +21,15 @@ export default async function Home() {
     const { count } = await supabase.from('game_accounts').select('id', { count: 'exact', head: true }).eq('category_id', category.id)
     return [category.id, count || 0] as const
   }))
-  const accountsWithImages = await Promise.all((accounts || []).map(async account => {
+  const imagePaths = (accounts || []).flatMap(account => account.image_path && !account.image_path.startsWith('http') ? [account.image_path] : [])
+  const { data: signedImages } = imagePaths.length
+    ? await supabase.storage.from('game-images').createSignedUrls(imagePaths, 60 * 60)
+    : { data: [] }
+  const signedImageMap = new Map((signedImages || []).map(image => [image.path, image.signedUrl]))
+  const accountsWithImages = (accounts || []).map(account => {
     if (!account.image_path || account.image_path.startsWith('http')) return account
-    const { data } = await supabase.storage.from('game-images').createSignedUrl(account.image_path, 60 * 60)
-    return { ...account, image_path: data?.signedUrl || null }
-  }))
+    return { ...account, image_path: signedImageMap.get(account.image_path) || null }
+  })
   return <main className="min-h-screen"><div className="mx-auto max-w-5xl px-4 pb-10 pt-3 sm:px-6 sm:pt-5">
     <header className="site-header flex items-center justify-between gap-3">
       <Link href="/" className="flex min-w-0 items-center gap-2.5" aria-label="ROV ID Manager"><span className="brand-mark" aria-hidden="true"><span className="brand-mark-dot" /></span><span><span className="block text-base font-bold">ROV ID Manager</span><span className="block text-[10px] text-muted">จัดการบัญชีของคุณ</span></span></Link>
